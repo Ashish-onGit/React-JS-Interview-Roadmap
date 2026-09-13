@@ -7,6 +7,7 @@ import MobileSidebar from "../components/MobileSidebar";
 import MobileBottomNav from "../components/MobileBottomNav";
 import SearchModal from "../components/SearchModal";
 import ResetProgressModal from "../components/ResetProgressModal";
+import AIAssistantModal from "../components/ai/AIAssistantModal";
 import { useProgress } from "../hooks/useProgress";
 
 const SIDEBAR_PREF_KEY = "react-js-interview-sidebar-open";
@@ -117,6 +118,9 @@ export default function MainLayout() {
         onClose={() => setIsResetModalOpen(false)}
         onConfirm={resetAllProgress}
       />
+
+      {/* AI Assistant Learning Modal */}
+      <AIAssistantModal />
     </div>
   );
 }

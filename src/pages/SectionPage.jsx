@@ -8,8 +8,10 @@ import {
   FiCircle,
   FiCheckCircle
 } from "react-icons/fi";
+import { LuSparkles } from "react-icons/lu";
 import { ROADMAP_DATA } from "../data/roadmap";
 import { useProgress } from "../hooks/useProgress";
+import { useAIAssistant } from "../context/AIContext";
 import ProgressBar from "../components/ProgressBar";
 
 export default function SectionPage() {
@@ -21,6 +23,7 @@ export default function SectionPage() {
     toggleTopicWithSubtopics,
     getSectionStats
   } = useProgress();
+  const { openAssistant } = useAIAssistant();
 
   // Expanded subtopics accordion state
   const [expandedTopics, setExpandedTopics] = useState({});
@@ -249,8 +252,31 @@ export default function SectionPage() {
                   </div>
                 </div>
 
-                {/* Right Action / Expand */}
+                {/* Right Action / AI Assistant / Expand */}
                 <div className="flex items-center space-x-2 flex-shrink-0">
+                  {/* AI Teach Me Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openAssistant({
+                        categoryId: currentCategory.id,
+                        categoryTitle: currentCategory.title,
+                        sectionId: currentSection.id,
+                        sectionTitle: currentSection.title,
+                        topicId: topic.id,
+                        topicTitle: topic.title,
+                        allSubtopics: topic.subtopics?.map((s) => s.title) || []
+                      }, e.currentTarget);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100/90 active:bg-indigo-100 rounded-lg transition-colors border border-indigo-100/70 cursor-pointer shadow-2xs"
+                    title={`Learn about ${topic.title} with AI`}
+                    aria-label={`Teach me about ${topic.title}`}
+                  >
+                    <LuSparkles className="w-3.5 h-3.5 text-indigo-600" />
+                    <span className="hidden xs:inline sm:inline">Teach Me</span>
+                  </button>
+
                   {hasSubtopics ? (
                     <button
                       type="button"
@@ -304,9 +330,37 @@ export default function SectionPage() {
                             {sub.title}
                           </span>
                         </div>
-                        <span className="text-[11px] text-slate-400">
-                          {subCompleted ? "Completed" : "Pending"}
-                        </span>
+
+                        <div className="flex items-center space-x-2.5 flex-shrink-0">
+                          {/* Subtopic AI Teach Me Button */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openAssistant({
+                                categoryId: currentCategory.id,
+                                categoryTitle: currentCategory.title,
+                                sectionId: currentSection.id,
+                                sectionTitle: currentSection.title,
+                                topicId: topic.id,
+                                topicTitle: topic.title,
+                                subtopicId: sub.id,
+                                subtopicTitle: sub.title,
+                                allSubtopics: topic.subtopics?.map((s) => s.title) || []
+                              }, e.currentTarget);
+                            }}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50/90 hover:bg-indigo-100 rounded-md transition-colors border border-indigo-100/60 cursor-pointer"
+                            title={`Learn about ${sub.title} with AI`}
+                            aria-label={`Teach me about ${sub.title}`}
+                          >
+                            <LuSparkles className="w-3 h-3 text-indigo-500" />
+                            <span>Teach Me</span>
+                          </button>
+
+                          <span className="text-[11px] text-slate-400">
+                            {subCompleted ? "Completed" : "Pending"}
+                          </span>
+                        </div>
                       </div>
                     );
                   })}
