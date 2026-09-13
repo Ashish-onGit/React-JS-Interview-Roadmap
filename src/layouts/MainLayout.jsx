@@ -4,6 +4,7 @@ import { FiSidebar } from "react-icons/fi";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import MobileSidebar from "../components/MobileSidebar";
+import MobileBottomNav from "../components/MobileBottomNav";
 import SearchModal from "../components/SearchModal";
 import ResetProgressModal from "../components/ResetProgressModal";
 import { useProgress } from "../hooks/useProgress";
@@ -83,7 +84,7 @@ export default function MainLayout() {
 
         {/* Main Content Area */}
         <main
-          className={`flex-1 min-w-0 p-4 sm:p-6 lg:p-8 transition-all duration-200 ${
+          className={`flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-28 md:pb-8 transition-all duration-200 ${
             isDesktopSidebarOpen ? "max-w-5xl" : "max-w-6xl mx-auto"
           }`}
         >
@@ -97,6 +98,12 @@ export default function MainLayout() {
         onClose={() => setIsMobileMenuOpen(false)}
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenResetModal={() => setIsResetModalOpen(true)}
+      />
+
+      {/* Mobile Bottom Navigation to Switch Between Topics */}
+      <MobileBottomNav
+        onOpenTopicsMenu={() => setIsMobileMenuOpen(true)}
+        onOpenSearch={() => setIsSearchOpen(true)}
       />
 
       {/* Global Search Modal */}
