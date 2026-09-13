@@ -274,7 +274,7 @@ export default function SectionPage() {
                     aria-label={`Teach me about ${topic.title}`}
                   >
                     <LuSparkles className="w-3.5 h-3.5 text-indigo-600" />
-                    <span className="hidden xs:inline sm:inline">Teach Me</span>
+                    {/* <span className="hidden xs:inline sm:inline">Teach Me</span> */}
                   </button>
 
                   {hasSubtopics ? (
