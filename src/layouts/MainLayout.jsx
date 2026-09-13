@@ -84,7 +84,7 @@ export default function MainLayout() {
 
         {/* Main Content Area */}
         <main
-          className={`flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-28 md:pb-8 transition-all duration-200 ${
+          className={`flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8 transition-all duration-200 ${
             isDesktopSidebarOpen ? "max-w-5xl" : "max-w-6xl mx-auto"
           }`}
         >
