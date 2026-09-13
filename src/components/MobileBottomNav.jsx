@@ -3,13 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   FiChevronLeft,
   FiChevronRight,
-  FiList,
   FiSearch
 } from "react-icons/fi";
 import { ROADMAP_DATA } from "../data/roadmap";
 import { useProgress } from "../hooks/useProgress";
 
-export default function MobileBottomNav({ onOpenTopicsMenu, onOpenSearch }) {
+export default function MobileBottomNav({ onOpenSearch }) {
   const { categoryId, sectionId } = useParams();
   const navigate = useNavigate();
   const { getSectionStats } = useProgress();
@@ -78,46 +77,32 @@ export default function MobileBottomNav({ onOpenTopicsMenu, onOpenSearch }) {
       )}
 
       {/* Navigation Controls Bar */}
-      <div className="flex items-center justify-between gap-1.5">
+      <div className="flex items-center justify-between gap-2">
         {/* Previous Topic Button */}
         <button
           type="button"
           disabled={!prevSection}
           onClick={() => goToSection(prevSection)}
           aria-label={prevSection ? `Previous topic: ${prevSection.sectionTitle}` : "No previous topic"}
-          className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
             prevSection
-              ? "text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 active:scale-95"
+              ? "text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 active:scale-98 cursor-pointer"
               : "text-slate-300 bg-slate-50 cursor-not-allowed"
           }`}
         >
           <FiChevronLeft className="w-4 h-4" />
-          <span>Prev</span>
+          <span className="truncate">Previous</span>
         </button>
 
-        {/* Center Actions: Topics Menu & Search */}
-        <div className="flex items-center gap-1">
-          {/* Topics Drawer Trigger */}
-          <button
-            type="button"
-            onClick={onOpenTopicsMenu}
-            aria-label="Open Topics Menu"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-indigo-600 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-all"
-          >
-            <FiList className="w-4 h-4 text-indigo-600" />
-            <span>Topics</span>
-          </button>
-
-          {/* Search Trigger */}
-          <button
-            type="button"
-            onClick={onOpenSearch}
-            aria-label="Search topics"
-            className="p-2 rounded-xl text-slate-600 hover:text-indigo-600 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-all"
-          >
-            <FiSearch className="w-4 h-4" />
-          </button>
-        </div>
+        {/* Quick Search Trigger */}
+        <button
+          type="button"
+          onClick={onOpenSearch}
+          aria-label="Search topics"
+          className="p-2.5 rounded-xl text-slate-600 hover:text-indigo-600 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-all flex-shrink-0 cursor-pointer"
+        >
+          <FiSearch className="w-4 h-4" />
+        </button>
 
         {/* Next Topic Button */}
         <button
@@ -125,13 +110,13 @@ export default function MobileBottomNav({ onOpenTopicsMenu, onOpenSearch }) {
           disabled={!nextSection}
           onClick={() => goToSection(nextSection)}
           aria-label={nextSection ? `Next topic: ${nextSection.sectionTitle}` : "No next topic"}
-          className={`flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-semibold shadow-xs transition-all ${
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold shadow-xs transition-all ${
             nextSection
-              ? "text-white bg-indigo-600 hover:bg-indigo-700 active:scale-95 shadow-indigo-200"
+              ? "text-white bg-indigo-600 hover:bg-indigo-700 active:scale-98 shadow-indigo-200 cursor-pointer"
               : "text-slate-300 bg-slate-100 cursor-not-allowed"
           }`}
         >
-          <span>Next</span>
+          <span className="truncate">Next</span>
           <FiChevronRight className="w-4 h-4" />
         </button>
       </div>

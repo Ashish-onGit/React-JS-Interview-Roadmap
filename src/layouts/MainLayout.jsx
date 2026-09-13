@@ -102,7 +102,6 @@ export default function MainLayout() {
 
       {/* Mobile Bottom Navigation to Switch Between Topics */}
       <MobileBottomNav
-        onOpenTopicsMenu={() => setIsMobileMenuOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
       />
 
