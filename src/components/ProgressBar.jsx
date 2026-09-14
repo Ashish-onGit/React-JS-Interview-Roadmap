@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 export default function ProgressBar({
   value = 0,
@@ -8,6 +9,12 @@ export default function ProgressBar({
   bgClass = "bg-slate-200 dark:bg-[#333333]"
 }) {
   const percentage = Math.min(Math.max(Math.round((value / (max || 1)) * 100), 0), 100);
+  const shouldReduceMotion = useReducedMotion();
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    isFirstRender.current = false;
+  }, []);
 
   return (
     <div
@@ -17,9 +24,15 @@ export default function ProgressBar({
       aria-valuemax={100}
       className={`w-full ${bgClass} rounded-full overflow-hidden ${height}`}
     >
-      <div
-        className={`${height} ${colorClass} rounded-full transition-all duration-300 ease-out`}
-        style={{ width: `${percentage}%` }}
+      <motion.div
+        className={`${height} ${colorClass} rounded-full`}
+        initial={isFirstRender.current ? false : { width: `${percentage}%` }}
+        animate={{ width: `${percentage}%` }}
+        transition={
+          shouldReduceMotion
+            ? { duration: 0 }
+            : { duration: 0.35, ease: "easeOut" }
+        }
       />
     </div>
   );

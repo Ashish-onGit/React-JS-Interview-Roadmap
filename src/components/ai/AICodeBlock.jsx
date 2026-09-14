@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiCopy, FiCheck } from "react-icons/fi";
 
 export default function AICodeBlock({ code, language = "javascript", explanation }) {
@@ -23,24 +24,41 @@ export default function AICodeBlock({ code, language = "javascript", explanation
         <span className="font-mono uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">
           {language}
         </span>
-        <button
+        <motion.button
           type="button"
+          whileTap={{ scale: 0.96 }}
           onClick={handleCopy}
           aria-label={copied ? "Copied code" : "Copy code"}
           className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-slate-300 dark:text-[#d4d4d4] hover:text-white bg-slate-700/60 dark:bg-[#222222] hover:bg-slate-700 dark:hover:bg-[#2c2c2c] transition-colors cursor-pointer"
         >
-          {copied ? (
-            <>
-              <FiCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-emerald-400 font-medium">Copied!</span>
-            </>
-          ) : (
-            <>
-              <FiCopy className="w-3.5 h-3.5" />
-              <span>Copy</span>
-            </>
-          )}
-        </button>
+          <AnimatePresence mode="wait" initial={false}>
+            {copied ? (
+              <motion.span
+                key="copied"
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.88 }}
+                transition={{ duration: 0.12 }}
+                className="flex items-center gap-1.5 text-emerald-400"
+              >
+                <FiCheck className="w-3.5 h-3.5" />
+                <span className="font-medium">Copied!</span>
+              </motion.span>
+            ) : (
+              <motion.span
+                key="copy"
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.88 }}
+                transition={{ duration: 0.12 }}
+                className="flex items-center gap-1.5"
+              >
+                <FiCopy className="w-3.5 h-3.5" />
+                <span>Copy</span>
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.button>
       </div>
 
       {/* Code Content - Horizontally scrollable */}

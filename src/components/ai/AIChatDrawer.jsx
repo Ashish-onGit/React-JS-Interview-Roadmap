@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiX, FiSearch } from "react-icons/fi";
 import { LuSparkles } from "react-icons/lu";
 import AIChatHistoryItem from "./AIChatHistoryItem";
 import AIChatEmptyState from "./AIChatEmptyState";
 import AIChatDeleteDialog from "./AIChatDeleteDialog";
+import { backdropVariants, drawerVariants } from "../../utils/motionVariants";
 
 export default function AIChatDrawer({
   isOpen,
@@ -34,19 +36,29 @@ export default function AIChatDrawer({
     });
   }, [chats, searchQuery]);
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-30 md:hidden bg-slate-900/50 dark:bg-black/75 backdrop-blur-xs flex animate-in fade-in duration-150"
-      onClick={onClose}
-    >
-      <div
-        className="w-[82%] max-w-xs bg-white dark:bg-[#141414] h-full shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-left duration-200"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Drawer Header */}
-        <div className="p-3.5 border-b border-slate-200 dark:border-[#262626] flex items-center justify-between bg-slate-50/80 dark:bg-[#161616]">
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          key="chat-drawer-backdrop"
+          variants={backdropVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          className="fixed inset-0 z-30 md:hidden bg-slate-900/50 dark:bg-black/75 backdrop-blur-xs flex"
+          onClick={onClose}
+        >
+          <motion.div
+            key="chat-drawer-panel"
+            variants={drawerVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="w-[82%] max-w-xs bg-white dark:bg-[#141414] h-full shadow-2xl flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Drawer Header */}
+            <div className="p-3.5 border-b border-slate-200 dark:border-[#262626] flex items-center justify-between bg-slate-50/80 dark:bg-[#161616]">
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center">
               <LuSparkles className="w-3.5 h-3.5" />
@@ -94,26 +106,28 @@ export default function AIChatDrawer({
 
         {/* Chats List */}
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
-          {filteredChats.length > 0 ? (
-            filteredChats.map((chat) => (
-              <AIChatHistoryItem
-                key={chat.chatId}
-                chat={chat}
-                isActive={chat.chatId === currentChatId}
-                onSelect={(id) => {
-                  onSelectChat(id);
-                  onClose();
-                }}
-                onDeleteRequest={(targetChat) => setChatToDelete(targetChat)}
-              />
-            ))
-          ) : chats.length === 0 ? (
-            <AIChatEmptyState />
-          ) : (
-            <div className="p-6 text-center text-slate-400 text-xs">
-              No chats matching &quot;{searchQuery}&quot;
-            </div>
-          )}
+          <AnimatePresence initial={false}>
+            {filteredChats.length > 0 ? (
+              filteredChats.map((chat) => (
+                <AIChatHistoryItem
+                  key={chat.chatId}
+                  chat={chat}
+                  isActive={chat.chatId === currentChatId}
+                  onSelect={(id) => {
+                    onSelectChat(id);
+                    onClose();
+                  }}
+                  onDeleteRequest={(targetChat) => setChatToDelete(targetChat)}
+                />
+              ))
+            ) : chats.length === 0 ? (
+              <AIChatEmptyState />
+            ) : (
+              <div className="p-6 text-center text-slate-400 text-xs">
+                No chats matching &quot;{searchQuery}&quot;
+              </div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Deletion Dialog */}
@@ -126,7 +140,9 @@ export default function AIChatDrawer({
             setChatToDelete(null);
           }}
         />
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

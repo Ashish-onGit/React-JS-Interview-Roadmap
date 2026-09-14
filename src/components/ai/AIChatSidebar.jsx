@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { AnimatePresence } from "framer-motion";
 import { FiSearch, FiX } from "react-icons/fi";
 import { LuSparkles } from "react-icons/lu";
 import AIChatHistoryItem from "./AIChatHistoryItem";
@@ -39,7 +40,7 @@ export default function AIChatSidebar({
       <div className="p-3.5 border-b border-slate-200/80 dark:border-[#262626] flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-5 h-5 rounded-md bg-indigo-100 dark:bg-[#222222] text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-            <LuSparkles className="w-3 h-3" />
+            <LuSparkles className="w-3.5 h-3.5" />
           </div>
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-[#f5f5f5]">
             AI Chats
@@ -75,23 +76,25 @@ export default function AIChatSidebar({
 
       {/* Chat History List */}
       <div className="flex-1 overflow-y-auto p-2 space-y-1">
-        {filteredChats.length > 0 ? (
-          filteredChats.map((chat) => (
-            <AIChatHistoryItem
-              key={chat.chatId}
-              chat={chat}
-              isActive={chat.chatId === currentChatId}
-              onSelect={onSelectChat}
-              onDeleteRequest={(targetChat) => setChatToDelete(targetChat)}
-            />
-          ))
-        ) : chats.length === 0 ? (
-          <AIChatEmptyState />
-        ) : (
-          <div className="p-6 text-center text-slate-400 dark:text-[#737373] text-xs">
-            No chats matching &quot;{searchQuery}&quot;
-          </div>
-        )}
+        <AnimatePresence initial={false}>
+          {filteredChats.length > 0 ? (
+            filteredChats.map((chat) => (
+              <AIChatHistoryItem
+                key={chat.chatId}
+                chat={chat}
+                isActive={chat.chatId === currentChatId}
+                onSelect={onSelectChat}
+                onDeleteRequest={(targetChat) => setChatToDelete(targetChat)}
+              />
+            ))
+          ) : chats.length === 0 ? (
+            <AIChatEmptyState />
+          ) : (
+            <div className="p-6 text-center text-slate-400 dark:text-[#737373] text-xs">
+              No chats matching &quot;{searchQuery}&quot;
+            </div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Chat Deletion Confirmation Dialog */}

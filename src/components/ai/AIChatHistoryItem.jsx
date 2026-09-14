@@ -1,6 +1,8 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { LuSparkles } from "react-icons/lu";
 import { FiTrash2 } from "react-icons/fi";
+import { chatItemDeleteVariants } from "../../utils/motionVariants";
 
 function formatRelativeTime(timestamp) {
   if (!timestamp) return "";
@@ -26,9 +28,13 @@ export default function AIChatHistoryItem({
     : `${chat.sectionTitle || chat.categoryTitle || ""}`;
 
   return (
-    <div
+    <motion.div
+      layout
+      variants={chatItemDeleteVariants}
+      initial="initial"
+      exit="exit"
       onClick={() => onSelect(chat.chatId)}
-      className={`group relative flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-all border ${
+      className={`group relative flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-colors border ${
         isActive
           ? "bg-indigo-50/90 dark:bg-[#242424] border-indigo-200/90 dark:border-[#383838] shadow-2xs text-indigo-950 dark:text-[#f5f5f5]"
           : "bg-white/60 dark:bg-[#171717] hover:bg-slate-100/90 dark:hover:bg-[#202020] border-transparent hover:border-slate-200/60 dark:hover:border-[#2d2d2d] text-slate-700 dark:text-[#d4d4d4]"
@@ -80,6 +86,6 @@ export default function AIChatHistoryItem({
           <FiTrash2 className="w-3.5 h-3.5" />
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }

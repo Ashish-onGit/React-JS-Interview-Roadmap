@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { FiAlertCircle, FiArrowLeft } from "react-icons/fi";
 import { ROADMAP_DATA } from "../data/roadmap";
 
@@ -8,7 +9,12 @@ export default function NotFound() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center p-6">
-      <div className="max-w-md w-full text-center bg-white dark:bg-[#171717] p-8 rounded-2xl border border-slate-200 dark:border-[#2a2a2a] shadow-sm">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
+        className="max-w-md w-full text-center bg-white dark:bg-[#171717] p-8 rounded-2xl border border-slate-200 dark:border-[#2a2a2a] shadow-sm"
+      >
         <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-[#222222] text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto mb-4">
           <FiAlertCircle className="w-8 h-8" />
         </div>
@@ -19,12 +25,12 @@ export default function NotFound() {
         </p>
         <Link
           to={defaultPath}
-          className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all shadow-sm shadow-indigo-200 dark:shadow-none"
+          className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:scale-97 rounded-xl transition-all shadow-sm shadow-indigo-200 dark:shadow-none cursor-pointer"
         >
           <FiArrowLeft className="w-4 h-4" />
           <span>Back to Roadmap</span>
         </Link>
-      </div>
+      </motion.div>
     </div>
   );
 }

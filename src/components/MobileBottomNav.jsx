@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { motion } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   FiChevronLeft,
@@ -70,27 +71,29 @@ export default function MobileBottomNav({ onOpenSearch }) {
       {/* Single Row: Prev Button | Wide Search Bar with Current Topic | Next Button */}
       <div className="flex items-center justify-between gap-2">
         {/* Previous Topic Button */}
-        <button
+        <motion.button
           type="button"
+          whileTap={prevSection ? { scale: 0.96 } : undefined}
           disabled={!prevSection}
           onClick={() => goToSection(prevSection)}
           aria-label={prevSection ? `Previous topic: ${prevSection.sectionTitle}` : "No previous topic"}
-          className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold transition-all flex-shrink-0 ${
+          className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold transition-colors flex-shrink-0 ${
             prevSection
-              ? "text-slate-700 dark:text-[#d4d4d4] hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-[#1c1c1c] hover:bg-slate-200 dark:hover:bg-[#262626] border border-transparent dark:border-[#2a2a2a] active:scale-95 cursor-pointer"
+              ? "text-slate-700 dark:text-[#d4d4d4] hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-[#1c1c1c] hover:bg-slate-200 dark:hover:bg-[#262626] border border-transparent dark:border-[#2a2a2a] cursor-pointer"
               : "text-slate-300 dark:text-[#404040] bg-slate-50 dark:bg-[#141414] cursor-not-allowed"
           }`}
         >
           <FiChevronLeft className="w-4 h-4" />
           <span>Prev</span>
-        </button>
+        </motion.button>
 
         {/* Center: Wide Search Bar with Current Topic Indicator */}
-        <button
+        <motion.button
           type="button"
+          whileTap={{ scale: 0.98 }}
           onClick={onOpenSearch}
           aria-label="Search topics across roadmap"
-          className="flex-1 min-w-0 flex items-center justify-between px-3 py-2 text-xs bg-slate-100 dark:bg-[#181818] hover:bg-slate-200/80 dark:hover:bg-[#202020] rounded-xl border border-slate-200/80 dark:border-[#2a2a2a] transition-all active:scale-[0.99] group cursor-pointer"
+          className="flex-1 min-w-0 flex items-center justify-between px-3 py-2 text-xs bg-slate-100 dark:bg-[#181818] hover:bg-slate-200/80 dark:hover:bg-[#202020] rounded-xl border border-slate-200/80 dark:border-[#2a2a2a] transition-colors group cursor-pointer"
         >
           <div className="flex items-center gap-2 min-w-0">
             <FiSearch className="w-3.5 h-3.5 text-slate-400 dark:text-[#737373] group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex-shrink-0" />
@@ -100,32 +103,37 @@ export default function MobileBottomNav({ onOpenSearch }) {
           </div>
 
           {currentSectionInfo && (
-            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-600 dark:text-[#d4d4d4] bg-white dark:bg-[#222222] border border-slate-200/70 dark:border-[#333333] px-1.5 py-0.5 rounded shadow-2xs flex-shrink-0 ml-1.5 truncate max-w-[110px]">
+            <motion.span
+              layoutId="active-mobile-topic"
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-600 dark:text-[#d4d4d4] bg-white dark:bg-[#222222] border border-slate-200/70 dark:border-[#333333] px-1.5 py-0.5 rounded shadow-2xs flex-shrink-0 ml-1.5 truncate max-w-[110px]"
+            >
               <span className="truncate">{currentSectionInfo.sectionNumber}</span>
               {sectionStats && (
                 <span className="text-emerald-600 dark:text-emerald-400 font-bold">
                   {sectionStats.percentage}%
                 </span>
               )}
-            </span>
+            </motion.span>
           )}
-        </button>
+        </motion.button>
 
         {/* Next Topic Button */}
-        <button
+        <motion.button
           type="button"
+          whileTap={nextSection ? { scale: 0.96 } : undefined}
           disabled={!nextSection}
           onClick={() => goToSection(nextSection)}
           aria-label={nextSection ? `Next topic: ${nextSection.sectionTitle}` : "No next topic"}
-          className={`flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-semibold shadow-xs transition-all flex-shrink-0 ${
+          className={`flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-semibold shadow-xs transition-colors flex-shrink-0 ${
             nextSection
-              ? "text-white bg-indigo-600 hover:bg-indigo-700 active:scale-95 shadow-indigo-200 cursor-pointer"
-              : "text-slate-300 dark:text-[#404040] bg-slate-100 dark:bg-[#141414] cursor-not-allowed"
+              ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-200 dark:shadow-none cursor-pointer"
+              : "text-slate-300 dark:text-[#404040] bg-slate-50 dark:bg-[#141414] cursor-not-allowed shadow-none"
           }`}
         >
           <span>Next</span>
           <FiChevronRight className="w-4 h-4" />
-        </button>
+        </motion.button>
       </div>
     </nav>
   </div>

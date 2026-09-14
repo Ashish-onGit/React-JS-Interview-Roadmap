@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiSidebar } from "react-icons/fi";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
@@ -11,10 +12,12 @@ import AIAssistantModal from "../components/ai/AIAssistantModal";
 import AIMinimizedPill from "../components/ai/AIMinimizedPill";
 import { useProgress } from "../hooks/useProgress";
 import { useAIAssistant } from "../context/AIContext";
+import { pageVariants } from "../utils/motionVariants";
 
 const SIDEBAR_PREF_KEY = "react-js-interview-sidebar-open";
 
 export default function MainLayout() {
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
@@ -94,7 +97,18 @@ export default function MainLayout() {
             isDesktopSidebarOpen ? "max-w-5xl" : "max-w-6xl mx-auto"
           }`}
         >
-          <Outlet />
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={location.pathname}
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="w-full"
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
 

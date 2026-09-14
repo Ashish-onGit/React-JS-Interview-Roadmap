@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { FiSend, FiLoader } from "react-icons/fi";
+import { buttonTapScale } from "../../utils/motionVariants";
 
 export default function AIFollowUpInput({ onSubmit, isLoading, disabled }) {
   const [question, setQuestion] = useState("");
@@ -18,6 +20,8 @@ export default function AIFollowUpInput({ onSubmit, isLoading, disabled }) {
     }
   };
 
+  const isButtonDisabled = !question.trim() || isLoading || disabled;
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -32,11 +36,12 @@ export default function AIFollowUpInput({ onSubmit, isLoading, disabled }) {
         placeholder="Ask a follow-up question (e.g. 'Explain with another analogy')..."
         className="flex-1 text-xs sm:text-sm bg-slate-50 dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#303030] rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-800 dark:text-[#f5f5f5] placeholder:text-slate-400 dark:placeholder-[#737373] transition-all disabled:opacity-50"
       />
-      <button
+      <motion.button
         type="submit"
-        disabled={!question.trim() || isLoading || disabled}
+        whileTap={!isButtonDisabled ? buttonTapScale : undefined}
+        disabled={isButtonDisabled}
         aria-label="Send follow-up question"
-        className="p-2.5 sm:px-4 sm:py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-medium text-xs sm:text-sm transition-all shadow-xs shadow-indigo-200 dark:shadow-none flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+        className="p-2.5 sm:px-4 sm:py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs sm:text-sm transition-all shadow-xs shadow-indigo-200 dark:shadow-none flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
       >
         {isLoading ? (
           <FiLoader className="w-4 h-4 animate-spin" />
@@ -46,7 +51,7 @@ export default function AIFollowUpInput({ onSubmit, isLoading, disabled }) {
             <FiSend className="w-3.5 h-3.5" />
           </>
         )}
-      </button>
+      </motion.button>
     </form>
   );
 }

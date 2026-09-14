@@ -1,17 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import {
-  FiSearch,
-  FiX,
-  FiCheckCircle,
-  FiCircle,
-  FiChevronRight,
-  FiTrendingUp,
-  FiLayers,
-  FiBookOpen
-} from "react-icons/fi";
+import { FiSearch, FiX, FiCheck, FiChevronRight, FiFolder, FiCornerDownLeft } from "react-icons/fi";
 import { ROADMAP_DATA } from "../data/roadmap";
 import { useProgress } from "../hooks/useProgress";
+import { modalVariants, backdropVariants } from "../utils/motionVariants";
 
 const POPULAR_SEARCHES = [
   "useState & useEffect",
@@ -166,20 +159,30 @@ export default function SearchModal({ isOpen, onClose, onSelectTopic }) {
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-start sm:items-center sm:pt-14 sm:px-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs animate-in fade-in duration-150"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="search-modal-title"
-      onClick={onClose}
-    >
-      <div
-        className="relative w-full h-[90dvh] sm:h-auto sm:max-h-[82vh] sm:max-w-2xl bg-white dark:bg-[#171717] rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-6 sm:slide-in-from-top-4 duration-200 border-0 sm:border sm:border-slate-200/80 dark:sm:border-[#2a2a2a]"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          key="search-backdrop"
+          variants={backdropVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-start sm:items-center sm:pt-14 sm:px-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="search-modal-title"
+          onClick={onClose}
+        >
+          <motion.div
+            key="search-modal"
+            variants={modalVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="relative w-full h-[90dvh] sm:h-auto sm:max-h-[82vh] sm:max-w-2xl bg-white dark:bg-[#171717] rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden border-0 sm:border sm:border-slate-200/80 dark:sm:border-[#2a2a2a]"
+            onClick={(e) => e.stopPropagation()}
+          >
         {/* Mobile Drag Indicator */}
         <div className="w-10 h-1 rounded-full bg-slate-300 dark:bg-[#333333] mx-auto mt-2.5 mb-1 sm:hidden shrink-0" />
 
@@ -385,7 +388,9 @@ export default function SearchModal({ isOpen, onClose, onSelectTopic }) {
             Close
           </button>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

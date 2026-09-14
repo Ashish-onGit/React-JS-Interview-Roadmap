@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { motion } from "framer-motion";
 import AICodeBlock from "./AICodeBlock";
 import AIComparison from "./AIComparison";
 import AIInterviewQuestions from "./AIInterviewQuestions";
@@ -6,6 +7,7 @@ import AIKeyTakeaways from "./AIKeyTakeaways";
 import AIMarkdownMessage from "./AIMarkdownMessage";
 import { LuSparkles, LuUser } from "react-icons/lu";
 import { FiAlertCircle, FiLoader, FiCopy, FiCheck, FiThumbsUp } from "react-icons/fi";
+import { messageVariants, buttonTapScale } from "../../utils/motionVariants";
 
 export default function AIContent({
   lesson,
@@ -15,6 +17,7 @@ export default function AIContent({
 }) {
   const [copiedIdx, setCopiedIdx] = useState(null);
   const [likedIndices, setLikedIndices] = useState({});
+  const initialMsgCount = useRef(conversation.length);
 
   const handleCopyResponse = async (text, idx) => {
     try {
@@ -172,10 +175,20 @@ export default function AIContent({
 
           {conversation.map((msg, idx) => {
             const isUser = msg.role === "user";
+            const isNewlyAdded = idx >= initialMsgCount.current;
+            const MessageComponent = isNewlyAdded ? motion.div : "div";
+            const motionProps = isNewlyAdded
+              ? {
+                  variants: messageVariants,
+                  initial: "initial",
+                  animate: "animate"
+                }
+              : {};
 
             return (
-              <div
+              <MessageComponent
                 key={idx}
+                {...motionProps}
                 className={`w-full flex ${
                   isUser ? "justify-end" : "justify-start"
                 }`}
@@ -238,7 +251,7 @@ export default function AIContent({
                     </div>
                   )}
                 </div>
-              </div>
+              </MessageComponent>
             );
           })}
 
@@ -265,14 +278,15 @@ export default function AIContent({
                   "⚠️ What are the common edge cases?",
                   "🔄 Summarize in 2 key points"
                 ].map((prompt, pIdx) => (
-                  <button
+                  <motion.button
                     key={pIdx}
                     type="button"
+                    whileTap={buttonTapScale}
                     onClick={() => onAskFollowUp(prompt.replace(/^[^a-zA-Z0-9]+/, ""))}
-                    className="text-xs px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1f1f1f] hover:bg-indigo-50 dark:hover:bg-[#282828] hover:text-indigo-700 dark:hover:text-white hover:border-indigo-200 dark:hover:border-[#444444] text-slate-600 dark:text-[#d4d4d4] border border-slate-200 dark:border-[#333333] shadow-2xs transition-all active:scale-95 text-left cursor-pointer"
+                    className="text-xs px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1f1f1f] hover:bg-indigo-50 dark:hover:bg-[#282828] hover:text-indigo-700 dark:hover:text-white hover:border-indigo-200 dark:hover:border-[#444444] text-slate-600 dark:text-[#d4d4d4] border border-slate-200 dark:border-[#333333] shadow-2xs transition-colors text-left cursor-pointer"
                   >
                     {prompt}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -294,14 +308,15 @@ export default function AIContent({
               "⚖️ Compare with alternative patterns",
               "👶 Explain this in simple terms"
             ].map((prompt, pIdx) => (
-              <button
+              <motion.button
                 key={pIdx}
                 type="button"
+                whileTap={buttonTapScale}
                 onClick={() => onAskFollowUp(prompt.replace(/^[^a-zA-Z0-9]+/, ""))}
-                className="text-xs px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1f1f1f] hover:bg-indigo-50 dark:hover:bg-[#282828] hover:text-indigo-700 dark:hover:text-white hover:border-indigo-200 dark:hover:border-[#444444] text-slate-600 dark:text-[#d4d4d4] border border-slate-200 dark:border-[#333333] shadow-2xs transition-all active:scale-95 text-left cursor-pointer"
+                className="text-xs px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1f1f1f] hover:bg-indigo-50 dark:hover:bg-[#282828] hover:text-indigo-700 dark:hover:text-white hover:border-indigo-200 dark:hover:border-[#444444] text-slate-600 dark:text-[#d4d4d4] border border-slate-200 dark:border-[#333333] shadow-2xs transition-colors text-left cursor-pointer"
               >
                 {prompt}
-              </button>
+              </motion.button>
             ))}
           </div>
         </section>

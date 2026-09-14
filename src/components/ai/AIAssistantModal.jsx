@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAIAssistant } from "../../context/AIContext";
 import AIAssistantHeader from "./AIAssistantHeader";
 import AIChatSidebar from "./AIChatSidebar";
@@ -7,6 +8,12 @@ import AILoading from "./AILoading";
 import AIError from "./AIError";
 import AIContent from "./AIContent";
 import AIFollowUpInput from "./AIFollowUpInput";
+import {
+  aiModalDesktopVariants,
+  aiModalMobileVariants,
+  backdropVariants,
+  chatSwitchVariants
+} from "../../utils/motionVariants";
 
 export default function AIAssistantModal() {
   const {
@@ -31,6 +38,17 @@ export default function AIAssistantModal() {
 
   const modalRef = useRef(null);
   const scrollContainerRef = useRef(null);
+
+  // Responsive state for animation variants
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < 640 : false
+  );
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Drag down to minimize state
   const [dragY, setDragY] = useState(0);
@@ -73,8 +91,6 @@ export default function AIAssistantModal() {
       });
     }
   }, [conversation, isFollowUpLoading]);
-
-  if (!isOpen) return null;
 
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -124,22 +140,34 @@ export default function AIAssistantModal() {
   };
 
   return (
-    <div
-      onClick={handleBackdropClick}
-      className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 md:p-6 transition-opacity animate-in fade-in duration-200"
-      aria-modal="true"
-      role="dialog"
-      aria-labelledby="ai-modal-title"
-    >
-      <div
-        ref={modalRef}
-        style={{
-          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
-          transition: isDragging ? "none" : "transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out",
-          opacity: dragY > 0 ? Math.max(0.35, 1 - dragY / 420) : 1
-        }}
-        className="w-full h-[100dvh] max-h-[100dvh] sm:h-[86vh] sm:max-h-[860px] sm:max-w-4xl lg:max-w-5xl bg-white dark:bg-[#141414] sm:rounded-2xl shadow-2xl flex flex-row overflow-hidden border border-slate-200/80 dark:border-[#2a2a2a] animate-in zoom-in-95 duration-200 relative"
-      >
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          key="ai-modal-backdrop"
+          variants={backdropVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          onClick={handleBackdropClick}
+          className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 md:p-6"
+          aria-modal="true"
+          role="dialog"
+          aria-labelledby="ai-modal-title"
+        >
+          <motion.div
+            key="ai-modal-sheet"
+            ref={modalRef}
+            variants={isMobile ? aiModalMobileVariants : aiModalDesktopVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            style={{
+              transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+              transition: isDragging ? "none" : "transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out",
+              opacity: dragY > 0 ? Math.max(0.35, 1 - dragY / 420) : undefined
+            }}
+            className="w-full h-[100dvh] max-h-[100dvh] sm:h-[86vh] sm:max-h-[860px] sm:max-w-4xl lg:max-w-5xl bg-white dark:bg-[#141414] sm:rounded-2xl shadow-2xl flex flex-row overflow-hidden border border-slate-200/80 dark:border-[#2a2a2a] relative"
+          >
         {/* Desktop Left Sidebar: Chat History */}
         <div className="hidden md:flex h-full">
           <AIChatSidebar
@@ -187,12 +215,22 @@ export default function AIAssistantModal() {
             )}
 
             {!isLoading && !error && lessonData && (
-              <AIContent
-                lesson={lessonData}
-                conversation={conversation}
-                isFollowUpLoading={isFollowUpLoading}
-                onAskFollowUp={askFollowUp}
-              />
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={activeChat?.chatId || "lesson-content"}
+                  variants={chatSwitchVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  <AIContent
+                    lesson={lessonData}
+                    conversation={conversation}
+                    isFollowUpLoading={isFollowUpLoading}
+                    onAskFollowUp={askFollowUp}
+                  />
+                </motion.div>
+              </AnimatePresence>
             )}
           </div>
 
@@ -205,7 +243,9 @@ export default function AIAssistantModal() {
             />
           )}
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
