@@ -191,6 +191,7 @@ export default function AIAssistantModal() {
                 lesson={lessonData}
                 conversation={conversation}
                 isFollowUpLoading={isFollowUpLoading}
+                onAskFollowUp={askFollowUp}
               />
             )}
           </div>

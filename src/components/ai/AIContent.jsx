@@ -1,16 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import AICodeBlock from "./AICodeBlock";
 import AIComparison from "./AIComparison";
 import AIInterviewQuestions from "./AIInterviewQuestions";
 import AIKeyTakeaways from "./AIKeyTakeaways";
+import AIMarkdownMessage from "./AIMarkdownMessage";
 import { LuSparkles, LuUser } from "react-icons/lu";
-import { FiAlertCircle, FiLoader } from "react-icons/fi";
+import { FiAlertCircle, FiLoader, FiCopy, FiCheck, FiThumbsUp } from "react-icons/fi";
 
 export default function AIContent({
   lesson,
   conversation = [],
-  isFollowUpLoading = false
+  isFollowUpLoading = false,
+  onAskFollowUp
 }) {
+  const [copiedIdx, setCopiedIdx] = useState(null);
+  const [likedIndices, setLikedIndices] = useState({});
+
+  const handleCopyResponse = async (text, idx) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIdx(idx);
+      setTimeout(() => setCopiedIdx(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy response", err);
+    }
+  };
+
+  const handleToggleLike = (idx) => {
+    setLikedIndices((prev) => ({
+      ...prev,
+      [idx]: !prev[idx]
+    }));
+  };
   if (!lesson) return null;
 
   return (
@@ -139,10 +160,15 @@ export default function AIContent({
       {/* In-Session Follow-Up Conversation Thread */}
       {conversation.length > 0 && (
         <section className="border-t border-slate-200 pt-6 space-y-4">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <span>💬</span>
-            <span>Follow-Up Q&A</span>
-          </h4>
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+              <span>💬</span>
+              <span>Follow-Up Discussion</span>
+            </h4>
+            <span className="text-[11px] font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+              {conversation.length} {conversation.length === 1 ? "message" : "messages"}
+            </span>
+          </div>
 
           {conversation.map((msg, idx) => {
             const isUser = msg.role === "user";
@@ -155,23 +181,72 @@ export default function AIContent({
                 }`}
               >
                 {!isUser && (
-                  <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center flex-shrink-0 shadow-2xs mt-0.5">
+                  <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center flex-shrink-0 shadow-2xs mt-1">
                     <LuSparkles className="w-3.5 h-3.5" />
                   </div>
                 )}
 
                 <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm leading-relaxed ${
+                  className={`rounded-2xl transition-all ${
                     isUser
-                      ? "bg-indigo-600 text-white rounded-tr-none shadow-xs"
-                      : "bg-slate-100 text-slate-800 rounded-tl-none border border-slate-200/80 whitespace-pre-wrap font-sans"
+                      ? "max-w-[85%] sm:max-w-[75%] px-4 py-2.5 bg-indigo-600 text-white rounded-tr-none shadow-xs text-xs sm:text-sm leading-relaxed"
+                      : "w-full max-w-[96%] sm:max-w-[92%] bg-white rounded-tl-none border border-slate-200 shadow-xs p-4 sm:p-5"
                   }`}
                 >
-                  {msg.content}
+                  {isUser ? (
+                    <div className="whitespace-pre-wrap font-medium">{msg.content}</div>
+                  ) : (
+                    <div>
+                      {/* Top interactive toolbar for AI message */}
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-3 text-xs">
+                        <div className="flex items-center gap-1.5 text-indigo-600 font-semibold text-[11px] sm:text-xs">
+                          <LuSparkles className="w-3.5 h-3.5" />
+                          <span>AI Assistant</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleCopyResponse(msg.content, idx)}
+                            className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+                            aria-label="Copy full answer"
+                            title="Copy full answer"
+                          >
+                            {copiedIdx === idx ? (
+                              <>
+                                <FiCheck className="w-3.5 h-3.5 text-emerald-500" />
+                                <span className="text-emerald-600 font-semibold">Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <FiCopy className="w-3.5 h-3.5" />
+                                <span>Copy</span>
+                              </>
+                            )}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleLike(idx)}
+                            className={`p-1.5 rounded-md text-xs transition-colors ${
+                              likedIndices[idx]
+                                ? "text-indigo-600 bg-indigo-50"
+                                : "text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                            }`}
+                            aria-label="Mark helpful"
+                            title="Helpful response"
+                          >
+                            <FiThumbsUp className={`w-3.5 h-3.5 ${likedIndices[idx] ? "fill-current" : ""}`} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Interactive Markdown Content */}
+                      <AIMarkdownMessage content={msg.content} />
+                    </div>
+                  )}
                 </div>
 
                 {isUser && (
-                  <div className="w-7 h-7 rounded-lg bg-slate-700 text-white flex items-center justify-center flex-shrink-0 shadow-2xs mt-0.5">
+                  <div className="w-7 h-7 rounded-lg bg-slate-700 text-white flex items-center justify-center flex-shrink-0 shadow-2xs mt-1">
                     <LuUser className="w-3.5 h-3.5" />
                   </div>
                 )}
@@ -180,13 +255,67 @@ export default function AIContent({
           })}
 
           {isFollowUpLoading && (
-            <div className="flex items-center gap-2.5 text-xs text-slate-400 pl-1 animate-pulse">
-              <div className="w-7 h-7 rounded-lg bg-indigo-600/30 text-indigo-600 flex items-center justify-center flex-shrink-0">
+            <div className="flex items-center gap-2.5 text-xs text-slate-500 pl-1 animate-pulse">
+              <div className="w-7 h-7 rounded-lg bg-indigo-600/20 text-indigo-600 flex items-center justify-center flex-shrink-0">
                 <FiLoader className="w-3.5 h-3.5 animate-spin" />
               </div>
-              <span>Generating follow-up answer...</span>
+              <span className="font-medium">Generating interactive answer...</span>
             </div>
           )}
+
+          {/* Quick Suggested Follow-Up Prompts after existing discussion */}
+          {onAskFollowUp && !isFollowUpLoading && (
+            <div className="pt-2">
+              <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                <span>⚡</span>
+                <span>Suggested Follow-Ups</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  "💡 Give another code example",
+                  "🎯 How do interviewers ask this?",
+                  "⚠️ What are the common edge cases?",
+                  "🔄 Summarize in 2 key points"
+                ].map((prompt, pIdx) => (
+                  <button
+                    key={pIdx}
+                    type="button"
+                    onClick={() => onAskFollowUp(prompt.replace(/^[^a-zA-Z0-9]+/, ""))}
+                    className="text-xs px-2.5 py-1.5 rounded-lg bg-white hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 text-slate-600 border border-slate-200 shadow-2xs transition-all active:scale-95 text-left cursor-pointer"
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Suggested Follow-Up Prompts for fresh topic */}
+      {conversation.length === 0 && onAskFollowUp && (
+        <section className="border-t border-slate-200/80 pt-5 space-y-2.5">
+          <div className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <span>💡</span>
+            <span>Suggested Questions</span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {[
+              "💡 Give a practical code example",
+              "🎯 Common interview pitfalls for this topic",
+              "⚖️ Compare with alternative patterns",
+              "👶 Explain this in simple terms"
+            ].map((prompt, pIdx) => (
+              <button
+                key={pIdx}
+                type="button"
+                onClick={() => onAskFollowUp(prompt.replace(/^[^a-zA-Z0-9]+/, ""))}
+                className="text-xs px-2.5 py-1.5 rounded-lg bg-white hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 text-slate-600 border border-slate-200 shadow-2xs transition-all active:scale-95 text-left cursor-pointer"
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
         </section>
       )}
     </div>
