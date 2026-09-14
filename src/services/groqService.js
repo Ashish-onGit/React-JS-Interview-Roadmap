@@ -9,8 +9,8 @@ const MODEL_FALLBACKS = [
   GROQ_MODEL,
   "openai/gpt-oss-120b",
   "openai/gpt-oss-20b",
-  "llama-3.3-70b-versatile",
-  "groq/compound-mini"
+  "qwen/qwen3.8-27b",
+  "llama-3.3-70b-versatile"
 ];
 
 // In-memory cache for session
