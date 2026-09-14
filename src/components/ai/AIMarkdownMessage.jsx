@@ -309,16 +309,16 @@ export default function AIMarkdownMessage({ content }) {
             return (
               <div
                 key={index}
-                className="my-3 overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-2xs scrollbar-thin"
+                className="my-2.5 overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-2xs scrollbar-thin"
               >
-                <table className="w-full text-left text-xs border-collapse min-w-[340px]">
+                <table className="w-full text-left text-xs border-collapse min-w-[280px]">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-200 text-slate-700">
                       {block.headers.map((header, hIdx) => (
                         <th
                           key={hIdx}
-                          className={`py-2.5 px-3.5 font-bold text-slate-900 border-r last:border-r-0 border-slate-200/60 bg-indigo-50/30 text-xs ${
-                            hIdx === 0 ? "min-w-[110px]" : "min-w-[160px]"
+                          className={`py-2 px-2.5 sm:py-2.5 sm:px-3.5 font-bold text-slate-900 border-r last:border-r-0 border-slate-200/60 bg-indigo-50/30 text-xs ${
+                            hIdx === 0 ? "min-w-[80px] sm:min-w-[100px]" : "min-w-[120px] sm:min-w-[150px]"
                           }`}
                         >
                           <InlineMarkdown text={header} />
@@ -339,7 +339,7 @@ export default function AIMarkdownMessage({ content }) {
                         {row.map((cell, cIdx) => (
                           <td
                             key={cIdx}
-                            className={`py-2.5 px-3.5 text-slate-700 border-r last:border-r-0 border-slate-200/60 align-top leading-relaxed text-xs ${
+                            className={`py-2 px-2.5 sm:py-2.5 sm:px-3.5 text-slate-700 border-r last:border-r-0 border-slate-200/60 align-top leading-relaxed text-xs ${
                               cIdx === 0 ? "font-semibold text-slate-800" : ""
                             }`}
                           >
@@ -358,9 +358,9 @@ export default function AIMarkdownMessage({ content }) {
               return (
                 <h3
                   key={index}
-                  className="text-base sm:text-lg font-bold text-slate-900 mt-4 mb-2 flex items-center gap-2 border-b border-slate-100 pb-1.5"
+                  className="text-base sm:text-lg font-bold text-slate-900 mt-3.5 mb-2 flex items-center gap-1.5 border-b border-slate-100 pb-1"
                 >
-                  <span className="w-2 h-4 bg-indigo-600 rounded-full inline-block"></span>
+                  <span className="w-1 h-4 bg-indigo-600 rounded-full inline-block shrink-0"></span>
                   <InlineMarkdown text={block.text} />
                 </h3>
               );
@@ -369,9 +369,9 @@ export default function AIMarkdownMessage({ content }) {
               return (
                 <h4
                   key={index}
-                  className="text-sm sm:text-base font-bold text-slate-900 mt-3.5 mb-2 flex items-center gap-2"
+                  className="text-sm sm:text-base font-bold text-slate-900 mt-3 mb-1.5 flex items-center gap-1.5"
                 >
-                  <span className="w-1.5 h-3.5 bg-indigo-600 rounded-full inline-block"></span>
+                  <span className="w-1 h-3.5 bg-indigo-600 rounded-full inline-block shrink-0"></span>
                   <InlineMarkdown text={block.text} />
                 </h4>
               );
@@ -379,9 +379,9 @@ export default function AIMarkdownMessage({ content }) {
             return (
               <h5
                 key={index}
-                className="text-xs sm:text-sm font-bold text-slate-900 mt-3 mb-1.5 flex items-center gap-1.5 text-indigo-900"
+                className="text-xs sm:text-sm font-bold text-slate-900 mt-2.5 mb-1 flex items-center gap-1.5 text-indigo-900"
               >
-                <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full inline-block"></span>
+                <span className="w-1 h-2.5 bg-indigo-500 rounded-full inline-block shrink-0"></span>
                 <InlineMarkdown text={block.text} />
               </h5>
             );
