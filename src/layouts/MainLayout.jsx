@@ -8,7 +8,9 @@ import MobileBottomNav from "../components/MobileBottomNav";
 import SearchModal from "../components/SearchModal";
 import ResetProgressModal from "../components/ResetProgressModal";
 import AIAssistantModal from "../components/ai/AIAssistantModal";
+import AIMinimizedPill from "../components/ai/AIMinimizedPill";
 import { useProgress } from "../hooks/useProgress";
+import { useAIAssistant } from "../context/AIContext";
 
 const SIDEBAR_PREF_KEY = "react-js-interview-sidebar-open";
 
@@ -26,6 +28,7 @@ export default function MainLayout() {
   });
 
   const { resetAllProgress } = useProgress();
+  const { isMinimized } = useAIAssistant();
 
   const toggleDesktopSidebar = () => {
     setIsDesktopSidebarOpen((prev) => {
@@ -85,7 +88,9 @@ export default function MainLayout() {
 
         {/* Main Content Area */}
         <main
-          className={`flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8 transition-all duration-200 ${
+          className={`flex-1 min-w-0 p-4 sm:p-6 lg:p-8 ${
+            isMinimized ? "pb-44 sm:pb-48 md:pb-12" : "pb-28 sm:pb-32 md:pb-8"
+          } transition-all duration-200 ${
             isDesktopSidebarOpen ? "max-w-5xl" : "max-w-6xl mx-auto"
           }`}
         >
@@ -118,6 +123,9 @@ export default function MainLayout() {
         onClose={() => setIsResetModalOpen(false)}
         onConfirm={resetAllProgress}
       />
+
+      {/* Desktop Floating Minimized AI Pill */}
+      <AIMinimizedPill variant="floating" />
 
       {/* AI Assistant Learning Modal */}
       <AIAssistantModal />

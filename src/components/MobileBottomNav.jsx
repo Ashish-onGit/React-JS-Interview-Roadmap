@@ -7,6 +7,7 @@ import {
 } from "react-icons/fi";
 import { ROADMAP_DATA } from "../data/roadmap";
 import { useProgress } from "../hooks/useProgress";
+import AIMinimizedPill from "./ai/AIMinimizedPill";
 
 export default function MobileBottomNav({ onOpenSearch }) {
   const { categoryId, sectionId } = useParams();
@@ -56,10 +57,16 @@ export default function MobileBottomNav({ onOpenSearch }) {
   };
 
   return (
-    <nav
-      aria-label="Mobile Topic Navigation"
-      className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_25px_rgba(0,0,0,0.07)] px-3 py-2"
-    >
+    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden flex flex-col pointer-events-none">
+      {/* Minimized AI Pill: Dynamically stacked directly above the search bar with 8-10px gap */}
+      <div className="px-3 pb-2.5 pointer-events-auto">
+        <AIMinimizedPill variant="mobile" />
+      </div>
+
+      <nav
+        aria-label="Mobile Topic Navigation"
+        className="pointer-events-auto bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_25px_rgba(0,0,0,0.07)] px-3 py-2"
+      >
       {/* Single Row: Prev Button | Wide Search Bar with Current Topic | Next Button */}
       <div className="flex items-center justify-between gap-2">
         {/* Previous Topic Button */}
@@ -121,5 +128,6 @@ export default function MobileBottomNav({ onOpenSearch }) {
         </button>
       </div>
     </nav>
+  </div>
   );
 }

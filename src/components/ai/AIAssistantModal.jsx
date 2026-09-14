@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { useAIAssistant } from "../../context/AIContext";
 import AIAssistantHeader from "./AIAssistantHeader";
+import AIChatSidebar from "./AIChatSidebar";
+import AIChatDrawer from "./AIChatDrawer";
 import AILoading from "./AILoading";
 import AIError from "./AIError";
 import AIContent from "./AIContent";
@@ -9,13 +11,19 @@ import AIFollowUpInput from "./AIFollowUpInput";
 export default function AIAssistantModal() {
   const {
     isOpen,
-    selectedItem,
+    activeChat,
+    chats,
     lessonData,
     isLoading,
     error,
     conversation,
     isFollowUpLoading,
+    isMobileDrawerOpen,
+    setIsMobileDrawerOpen,
     closeAssistant,
+    minimizeAssistant,
+    switchChat,
+    deleteTopicChat,
     regenerate,
     retry,
     askFollowUp
@@ -24,7 +32,7 @@ export default function AIAssistantModal() {
   const modalRef = useRef(null);
   const scrollContainerRef = useRef(null);
 
-  // Lock body scroll when modal is open
+  // Lock body scroll only when modal is open
   useEffect(() => {
     if (!isOpen) return;
 
@@ -36,7 +44,7 @@ export default function AIAssistantModal() {
     };
   }, [isOpen]);
 
-  // Handle ESC key press
+  // Handle ESC key press to close modal
   useEffect(() => {
     if (!isOpen) return;
 
@@ -79,44 +87,69 @@ export default function AIAssistantModal() {
     >
       <div
         ref={modalRef}
-        className="w-full h-[100dvh] max-h-[100dvh] sm:h-[88vh] sm:max-h-[850px] sm:max-w-3xl lg:max-w-4xl bg-white sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-200/80 animate-in zoom-in-95 duration-200"
+        className="w-full h-[100dvh] max-h-[100dvh] sm:h-[86vh] sm:max-h-[860px] sm:max-w-4xl lg:max-w-5xl bg-white sm:rounded-2xl shadow-2xl flex flex-row overflow-hidden border border-slate-200/80 animate-in zoom-in-95 duration-200 relative"
       >
-        {/* Header */}
-        <AIAssistantHeader
-          item={selectedItem}
-          onClose={closeAssistant}
-          onRegenerate={regenerate}
-          isLoading={isLoading}
+        {/* Desktop Left Sidebar: Chat History */}
+        <div className="hidden md:flex h-full">
+          <AIChatSidebar
+            chats={chats}
+            currentChatId={activeChat?.chatId}
+            onSelectChat={switchChat}
+            onDeleteChat={deleteTopicChat}
+          />
+        </div>
+
+        {/* Mobile Slide-in Drawer: Chat History */}
+        <AIChatDrawer
+          isOpen={isMobileDrawerOpen}
+          onClose={() => setIsMobileDrawerOpen(false)}
+          chats={chats}
+          currentChatId={activeChat?.chatId}
+          onSelectChat={switchChat}
+          onDeleteChat={deleteTopicChat}
         />
 
-        {/* Scrollable Content Body */}
-        <div
-          ref={scrollContainerRef}
-          className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 bg-slate-50/40"
-        >
-          {isLoading && <AILoading />}
+        {/* Main Learning Content Area */}
+        <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-white">
+          {/* Header */}
+          <AIAssistantHeader
+            item={activeChat}
+            onClose={closeAssistant}
+            onMinimize={minimizeAssistant}
+            onRegenerate={regenerate}
+            onToggleMobileDrawer={() => setIsMobileDrawerOpen(true)}
+            isLoading={isLoading}
+          />
 
-          {!isLoading && error && (
-            <AIError error={error} onRetry={retry} onClose={closeAssistant} />
-          )}
+          {/* Scrollable Content Body */}
+          <div
+            ref={scrollContainerRef}
+            className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 bg-slate-50/40"
+          >
+            {isLoading && <AILoading />}
 
+            {!isLoading && error && (
+              <AIError error={error} onRetry={retry} onClose={closeAssistant} />
+            )}
+
+            {!isLoading && !error && lessonData && (
+              <AIContent
+                lesson={lessonData}
+                conversation={conversation}
+                isFollowUpLoading={isFollowUpLoading}
+              />
+            )}
+          </div>
+
+          {/* Bottom Follow-Up Question Input */}
           {!isLoading && !error && lessonData && (
-            <AIContent
-              lesson={lessonData}
-              conversation={conversation}
-              isFollowUpLoading={isFollowUpLoading}
+            <AIFollowUpInput
+              onSubmit={askFollowUp}
+              isLoading={isFollowUpLoading}
+              disabled={isLoading}
             />
           )}
         </div>
-
-        {/* Bottom Follow-Up Question Input */}
-        {!isLoading && !error && lessonData && (
-          <AIFollowUpInput
-            onSubmit={askFollowUp}
-            isLoading={isFollowUpLoading}
-            disabled={isLoading}
-          />
-        )}
       </div>
     </div>
   );
