@@ -8,14 +8,15 @@ import {
   FiCircle,
   FiTarget,
   FiRotateCcw,
-  FiChevronsLeft
+  FiChevronsLeft,
+  FiX
 } from "react-icons/fi";
 import { ROADMAP_DATA } from "../data/roadmap";
 import { useProgress } from "../hooks/useProgress";
 import ProgressBar from "./ProgressBar";
 import CategoryIcon from "./CategoryIcon";
 
-export default function SidebarContent({ onOpenSearch, onOpenResetModal, onItemClick, onCollapse }) {
+export default function SidebarContent({ onOpenSearch, onOpenResetModal, onItemClick, onCollapse, onClose }) {
   const { categoryId, sectionId } = useParams();
   const navigate = useNavigate();
   const { getCategoryStats, getSectionStats, overallStats } = useProgress();
@@ -72,19 +73,32 @@ export default function SidebarContent({ onOpenSearch, onOpenResetModal, onItemC
     <div className="flex flex-col h-full bg-white border-r border-slate-200">
       {/* Search & Global Controls Header */}
       <div className="p-3.5 border-b border-slate-100 space-y-2.5 bg-slate-50/50">
-        <button
-          type="button"
-          onClick={onOpenSearch}
-          className="w-full flex items-center justify-between px-3 py-2 text-xs text-slate-500 bg-white hover:bg-slate-50 rounded-xl border border-slate-200 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-        >
-          <div className="flex items-center gap-2">
-            <FiSearch className="w-3.5 h-3.5 text-slate-400" />
-            <span>Search topics...</span>
-          </div>
-          <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 rounded">
-            Ctrl + K
-          </kbd>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onOpenSearch}
+            className="flex-1 flex items-center justify-between px-3 py-2 text-xs text-slate-500 bg-white hover:bg-slate-50 rounded-xl border border-slate-200 shadow-xs transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+          >
+            <div className="flex items-center gap-2">
+              <FiSearch className="w-3.5 h-3.5 text-slate-400" />
+              <span>Search topics...</span>
+            </div>
+            <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 rounded">
+              Ctrl + K
+            </kbd>
+          </button>
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 rounded-xl transition-colors shrink-0"
+              aria-label="Close drawer"
+              title="Close drawer"
+            >
+              <FiX className="w-4 h-4" />
+            </button>
+          )}
+        </div>
 
         <div className="flex items-center justify-between text-xs text-slate-500 px-0.5">
           <span className="font-semibold text-slate-600 uppercase tracking-wider text-[10px]">

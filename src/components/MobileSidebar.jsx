@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { FiX } from "react-icons/fi";
 import SidebarContent from "./SidebarContent";
 
 export default function MobileSidebar({ isOpen, onClose, onOpenSearch, onOpenResetModal }) {
@@ -33,18 +32,6 @@ export default function MobileSidebar({ isOpen, onClose, onOpenSearch, onOpenRes
       <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
 
       <div className="relative w-4/5 max-w-xs bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200">
-        <div className="p-3 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
-          <span className="font-semibold text-sm">Navigation</span>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
-            aria-label="Close menu"
-          >
-            <FiX className="w-5 h-5" />
-          </button>
-        </div>
-
         <div className="flex-1 overflow-hidden">
           <SidebarContent
             onOpenSearch={() => {
@@ -56,6 +43,7 @@ export default function MobileSidebar({ isOpen, onClose, onOpenSearch, onOpenRes
               onOpenResetModal();
             }}
             onItemClick={onClose}
+            onClose={onClose}
           />
         </div>
       </div>
