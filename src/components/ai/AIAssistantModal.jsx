@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import { useAIAssistant } from "../../context/AIContext";
 import AIAssistantHeader from "./AIAssistantHeader";
 import AIChatSidebar from "./AIChatSidebar";
@@ -38,6 +38,7 @@ export default function AIAssistantModal() {
 
   const modalRef = useRef(null);
   const scrollContainerRef = useRef(null);
+  const dragControls = useDragControls();
 
   // Responsive state for animation variants
   const [isMobile, setIsMobile] = useState(() =>
@@ -49,11 +50,6 @@ export default function AIAssistantModal() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  // Drag down to minimize state
-  const [dragY, setDragY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStartYRef = useRef(0);
 
   // Lock body scroll only when modal is open
   useEffect(() => {
@@ -98,47 +94,6 @@ export default function AIAssistantModal() {
     }
   };
 
-  // Drag header downwards to minimize gesture handlers
-  const handleHeaderPointerDown = (e) => {
-    // Ignore interactive button and input elements
-    if (e.target.closest("button") || e.target.closest("input") || e.target.closest("a")) {
-      return;
-    }
-    dragStartYRef.current = e.clientY;
-    setIsDragging(true);
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {
-      // ignore
-    }
-  };
-
-  const handleHeaderPointerMove = (e) => {
-    if (!isDragging) return;
-    const delta = e.clientY - dragStartYRef.current;
-    if (delta > 0) {
-      setDragY(delta);
-    } else {
-      setDragY(0);
-    }
-  };
-
-  const handleHeaderPointerUp = (e) => {
-    if (!isDragging) return;
-    setIsDragging(false);
-    try {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    } catch {
-      // ignore
-    }
-
-    // Threshold: if dragged downwards past 80px, minimize the assistant
-    if (dragY > 80) {
-      minimizeAssistant();
-    }
-    setDragY(0);
-  };
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -161,10 +116,15 @@ export default function AIAssistantModal() {
             initial="initial"
             animate="animate"
             exit="exit"
-            style={{
-              transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
-              transition: isDragging ? "none" : "transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out",
-              opacity: dragY > 0 ? Math.max(0.35, 1 - dragY / 420) : undefined
+            drag="y"
+            dragListener={false}
+            dragControls={dragControls}
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 0.8 }}
+            onDragEnd={(_e, info) => {
+              if (info.offset.y > 70 || info.velocity.y > 300) {
+                minimizeAssistant();
+              }
             }}
             className="w-full h-[100dvh] max-h-[100dvh] sm:h-[86vh] sm:max-h-[860px] sm:max-w-4xl lg:max-w-5xl bg-white dark:bg-[#141414] sm:rounded-2xl shadow-2xl flex flex-row overflow-hidden border border-slate-200/80 dark:border-[#2a2a2a] relative"
           >
@@ -197,9 +157,12 @@ export default function AIAssistantModal() {
             onMinimize={minimizeAssistant}
             onRegenerate={regenerate}
             onToggleMobileDrawer={() => setIsMobileDrawerOpen(true)}
-            onPointerDown={handleHeaderPointerDown}
-            onPointerMove={handleHeaderPointerMove}
-            onPointerUp={handleHeaderPointerUp}
+            onPointerDown={(e) => {
+              if (e.target.closest("button") || e.target.closest("input") || e.target.closest("a")) {
+                return;
+              }
+              dragControls.start(e);
+            }}
             isLoading={isLoading}
           />
 

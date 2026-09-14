@@ -9,8 +9,6 @@ export default function AIAssistantHeader({
   onRegenerate,
   onToggleMobileDrawer,
   onPointerDown,
-  onPointerMove,
-  onPointerUp,
   isLoading
 }) {
   const isSubtopic = Boolean(item?.subtopicTitle);
@@ -23,9 +21,6 @@ export default function AIAssistantHeader({
   return (
     <div
       onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
       className="flex flex-col border-b border-slate-200/90 dark:border-[#262626] bg-white dark:bg-[#151515] sticky top-0 z-10 flex-shrink-0 select-none cursor-grab active:cursor-grabbing touch-none"
     >
       {/* Top Drag Handle Pill Bar */}
