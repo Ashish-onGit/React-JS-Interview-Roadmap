@@ -24,14 +24,14 @@ export default function MobileSidebar({ isOpen, onClose, onOpenSearch, onOpenRes
 
   return (
     <div
-      className="fixed inset-0 z-50 md:hidden bg-slate-900/60 backdrop-blur-xs flex"
+      className="fixed inset-0 z-50 md:hidden bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex"
       role="dialog"
       aria-modal="true"
     >
       {/* Backdrop click to dismiss */}
       <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
 
-      <div className="relative w-4/5 max-w-xs bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200">
+      <div className="relative w-4/5 max-w-xs bg-white dark:bg-[#141414] border-r dark:border-[#292929] h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200">
         <div className="flex-1 overflow-hidden">
           <SidebarContent
             onOpenSearch={() => {

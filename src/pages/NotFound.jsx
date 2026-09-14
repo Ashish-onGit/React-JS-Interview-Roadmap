@@ -8,18 +8,18 @@ export default function NotFound() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center p-6">
-      <div className="max-w-md w-full text-center bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-        <div className="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4">
+      <div className="max-w-md w-full text-center bg-white dark:bg-[#171717] p-8 rounded-2xl border border-slate-200 dark:border-[#2a2a2a] shadow-sm">
+        <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-[#222222] text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto mb-4">
           <FiAlertCircle className="w-8 h-8" />
         </div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">404</h1>
-        <h2 className="text-lg font-bold text-slate-700 mt-1">Topic or Section Not Found</h2>
-        <p className="mt-2 text-sm text-slate-500">
+        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-[#f5f5f5] tracking-tight">404</h1>
+        <h2 className="text-lg font-bold text-slate-700 dark:text-[#d4d4d4] mt-1">Topic or Section Not Found</h2>
+        <p className="mt-2 text-sm text-slate-500 dark:text-[#a3a3a3]">
           The topic or route you were looking for doesn't exist in the roadmap.
         </p>
         <Link
           to={defaultPath}
-          className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all shadow-sm shadow-indigo-200"
+          className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all shadow-sm shadow-indigo-200 dark:shadow-none"
         >
           <FiArrowLeft className="w-4 h-4" />
           <span>Back to Roadmap</span>

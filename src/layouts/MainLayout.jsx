@@ -60,8 +60,8 @@ export default function MainLayout() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8fafc]">
-      {/* Top Navy Header */}
+    <div className="min-h-screen flex flex-col bg-[#f8fafc] dark:bg-[#0f0f0f] text-slate-800 dark:text-[#f5f5f5] transition-colors duration-150">
+      {/* Top Header */}
       <Header
         onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
         isDesktopSidebarOpen={isDesktopSidebarOpen}

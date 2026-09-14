@@ -38,23 +38,23 @@ export default function AIChatDrawer({
 
   return (
     <div
-      className="fixed inset-0 z-30 md:hidden bg-slate-900/50 backdrop-blur-xs flex animate-in fade-in duration-150"
+      className="fixed inset-0 z-30 md:hidden bg-slate-900/50 dark:bg-black/75 backdrop-blur-xs flex animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div
-        className="w-[82%] max-w-xs bg-white h-full shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-left duration-200"
+        className="w-[82%] max-w-xs bg-white dark:bg-[#141414] h-full shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-left duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Drawer Header */}
-        <div className="p-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/80">
+        <div className="p-3.5 border-b border-slate-200 dark:border-[#262626] flex items-center justify-between bg-slate-50/80 dark:bg-[#161616]">
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center">
               <LuSparkles className="w-3.5 h-3.5" />
             </div>
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-[#f5f5f5]">
               AI Chats
             </span>
-            <span className="text-[10px] font-bold text-slate-500 bg-slate-200 px-1.5 py-0.5 rounded-full">
+            <span className="text-[10px] font-bold text-slate-500 dark:text-[#a3a3a3] bg-slate-200 dark:bg-[#262626] px-1.5 py-0.5 rounded-full">
               {chats.length}
             </span>
           </div>
@@ -63,28 +63,28 @@ export default function AIChatDrawer({
             type="button"
             onClick={onClose}
             aria-label="Close chat drawer"
-            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 text-slate-400 dark:text-[#a3a3a3] hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#262626] rounded-lg transition-colors cursor-pointer"
           >
             <FiX className="w-5 h-5" />
           </button>
         </div>
 
         {/* Search Bar */}
-        <div className="p-2.5 border-b border-slate-200/60">
+        <div className="p-2.5 border-b border-slate-200/60 dark:border-[#262626]">
           <div className="relative flex items-center">
-            <FiSearch className="absolute left-2.5 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+            <FiSearch className="absolute left-2.5 w-3.5 h-3.5 text-slate-400 dark:text-[#737373] pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search chats..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-7 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+              className="w-full bg-slate-50 dark:bg-[#191919] border border-slate-200 dark:border-[#303030] rounded-lg pl-8 pr-7 py-1.5 text-xs text-slate-800 dark:text-[#f5f5f5] placeholder:text-slate-400 dark:placeholder-[#737373] outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2 text-slate-400 hover:text-slate-600 p-0.5"
+                className="absolute right-2 text-slate-400 dark:text-[#737373] hover:text-slate-600 dark:hover:text-[#d4d4d4] p-0.5"
               >
                 <FiX className="w-3 h-3" />
               </button>

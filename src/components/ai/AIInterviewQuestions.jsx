@@ -23,23 +23,23 @@ export default function AIInterviewQuestions({ questions }) {
         return (
           <div
             key={idx}
-            className="border border-slate-200/90 rounded-xl overflow-hidden bg-white shadow-2xs transition-all"
+            className="border border-slate-200/90 dark:border-[#2a2a2a] rounded-xl overflow-hidden bg-white dark:bg-[#171717] shadow-2xs transition-all"
           >
             <button
               type="button"
               onClick={() => toggle(idx)}
               aria-expanded={isOpen}
-              className="w-full text-left p-3 sm:px-4 flex items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors cursor-pointer"
+              className="w-full text-left p-3 sm:px-4 flex items-center justify-between gap-3 hover:bg-slate-50/80 dark:hover:bg-[#1f1f1f] transition-colors cursor-pointer"
             >
               <div className="flex items-start gap-2.5 min-w-0">
-                <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md flex-shrink-0 mt-0.5">
+                <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-[#222222] border border-indigo-100 dark:border-[#333333] px-2 py-0.5 rounded-md flex-shrink-0 mt-0.5">
                   Q{idx + 1}
                 </span>
-                <span className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">
+                <span className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-[#f5f5f5] leading-snug">
                   {item.question}
                 </span>
               </div>
-              <div className="text-slate-400 flex-shrink-0">
+              <div className="text-slate-400 dark:text-[#737373] flex-shrink-0">
                 {isOpen ? (
                   <FiChevronUp className="w-4 h-4" />
                 ) : (
@@ -49,8 +49,8 @@ export default function AIInterviewQuestions({ questions }) {
             </button>
 
             {isOpen && (
-              <div className="px-4 pb-3.5 pt-1 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/40 animate-in fade-in duration-150">
-                <div className="font-semibold text-slate-800 text-[11px] uppercase tracking-wider mb-1 text-indigo-700">
+              <div className="px-4 pb-3.5 pt-1 text-xs sm:text-sm text-slate-600 dark:text-[#d4d4d4] leading-relaxed border-t border-slate-100 dark:border-[#262626] bg-slate-50/40 dark:bg-[#141414] animate-in fade-in duration-150">
+                <div className="font-semibold text-[11px] uppercase tracking-wider mb-1 text-indigo-700 dark:text-indigo-400">
                   Model Answer:
                 </div>
                 <p className="whitespace-pre-line">{item.answer}</p>

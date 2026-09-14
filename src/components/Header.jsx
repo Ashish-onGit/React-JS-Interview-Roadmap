@@ -1,6 +1,7 @@
 import React from "react";
 import { FiCode, FiMenu, FiSidebar, FiSearch } from "react-icons/fi";
 import { useProgress } from "../hooks/useProgress";
+import ThemeToggle from "./theme/ThemeToggle";
 
 export default function Header({
   onOpenMobileMenu,
@@ -11,7 +12,7 @@ export default function Header({
   const { overallStats } = useProgress();
 
   return (
-    <header className="bg-white text-slate-800 border-b border-slate-200 sticky top-0 z-30 h-16 md:h-[72px] shadow-xs">
+    <header className="bg-white dark:bg-[#111111] text-slate-800 dark:text-[#f5f5f5] border-b border-slate-200 dark:border-[#2a2a2a] sticky top-0 z-30 h-16 md:h-[72px] shadow-xs transition-colors duration-150">
       <div className="max-w-[1600px] mx-auto px-3.5 sm:px-6 h-full flex items-center justify-between gap-3 sm:gap-4">
         
         {/* Left: Branding & Sidebar Controls */}
@@ -21,7 +22,7 @@ export default function Header({
             type="button"
             onClick={onOpenMobileMenu}
             aria-label="Open navigation menu"
-            className="md:hidden p-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors flex-shrink-0"
+            className="md:hidden p-1.5 text-slate-600 dark:text-[#a3a3a3] hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-[#222222] transition-colors flex-shrink-0"
           >
             <FiMenu className="w-5 h-5" />
           </button>
@@ -34,8 +35,8 @@ export default function Header({
             title={isDesktopSidebarOpen ? "Hide sidebar (Ctrl+B)" : "Show sidebar (Ctrl+B)"}
             className={`hidden md:flex items-center justify-center p-2 rounded-lg transition-colors flex-shrink-0 ${
               isDesktopSidebarOpen
-                ? "text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-                : "text-indigo-600 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-700 border border-indigo-200"
+                ? "text-slate-500 dark:text-[#a3a3a3] hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#222222]"
+                : "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-[#1f1f1f] hover:bg-indigo-100 dark:hover:bg-[#262626] border border-indigo-200 dark:border-[#333333]"
             }`}
           >
             <FiSidebar className="w-5 h-5" />
@@ -48,46 +49,49 @@ export default function Header({
 
           {/* Title & Subtitle */}
           <div className="min-w-0">
-            <h1 className="text-base sm:text-lg md:text-xl font-bold tracking-tight text-slate-900 leading-tight truncate">
+            <h1 className="text-base sm:text-lg md:text-xl font-bold tracking-tight text-slate-900 dark:text-[#f5f5f5] leading-tight truncate">
               <span className="hidden sm:inline">React + JavaScript Interview Preparation</span>
               <span className="sm:hidden">React + JS Interview</span>
             </h1>
-            <p className="text-[11px] sm:text-xs text-slate-500 font-normal leading-tight mt-0.5 truncate">
+            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-[#a3a3a3] font-normal leading-tight mt-0.5 truncate">
               Learn • Revise • Track • Crack It 🚀
             </p>
           </div>
         </div>
 
-        {/* Center: Search Bar in Light Theme */}
+        {/* Center: Search Bar */}
         <div className="hidden md:flex items-center justify-center px-2 flex-1 max-w-sm lg:max-w-md mx-auto">
           <button
             type="button"
             onClick={onOpenSearch}
-            className="w-full flex items-center justify-between px-3.5 py-2 text-xs text-slate-600 bg-slate-50 hover:bg-slate-100/90 rounded-xl border border-slate-200/90 hover:border-slate-300 shadow-xs transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/20 group cursor-pointer"
+            className="w-full flex items-center justify-between px-3.5 py-2 text-xs text-slate-600 dark:text-[#d4d4d4] bg-slate-50 dark:bg-[#191919] hover:bg-slate-100/90 dark:hover:bg-[#222222] rounded-xl border border-slate-200/90 dark:border-[#303030] hover:border-slate-300 dark:hover:border-[#3d3d3d] shadow-xs transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/20 group cursor-pointer"
             title="Search topics across roadmap (Ctrl+K)"
             aria-label="Search topics across roadmap"
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              <FiSearch className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-colors flex-shrink-0" />
-              <span className="text-slate-400 group-hover:text-slate-600 transition-colors truncate">
+              <FiSearch className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex-shrink-0" />
+              <span className="text-slate-400 dark:text-[#737373] group-hover:text-slate-600 dark:group-hover:text-[#a3a3a3] transition-colors truncate">
                 Search topics across roadmap...
               </span>
             </div>
-            <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold text-slate-500 bg-white border border-slate-200 rounded flex-shrink-0 ml-2 shadow-2xs">
+            <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold text-slate-500 dark:text-[#a3a3a3] bg-white dark:bg-[#1f1f1f] border border-slate-200 dark:border-[#333333] rounded flex-shrink-0 ml-2 shadow-2xs">
               Ctrl + K
             </kbd>
           </button>
         </div>
 
-        {/* Right: Streamlined Header Progress Pill */}
+        {/* Right: Progress Pill & Theme Toggle */}
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-700 shadow-2xs">
+          <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#191919] border border-slate-200/80 dark:border-[#303030] px-3 py-1.5 rounded-xl text-xs font-medium text-slate-700 dark:text-[#d4d4d4] shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-            <span className="font-bold text-slate-900">{overallStats.percentage}%</span>
-            <span className="hidden sm:inline text-slate-400 text-[11px]">
+            <span className="font-bold text-slate-900 dark:text-[#f5f5f5]">{overallStats.percentage}%</span>
+            <span className="hidden sm:inline text-slate-400 dark:text-[#737373] text-[11px]">
               ({overallStats.completed}/{overallStats.total})
             </span>
           </div>
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
         </div>
 
       </div>

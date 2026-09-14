@@ -126,7 +126,7 @@ export default function AIAssistantModal() {
   return (
     <div
       onClick={handleBackdropClick}
-      className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 md:p-6 transition-opacity animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4 md:p-6 transition-opacity animate-in fade-in duration-200"
       aria-modal="true"
       role="dialog"
       aria-labelledby="ai-modal-title"
@@ -138,7 +138,7 @@ export default function AIAssistantModal() {
           transition: isDragging ? "none" : "transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out",
           opacity: dragY > 0 ? Math.max(0.35, 1 - dragY / 420) : 1
         }}
-        className="w-full h-[100dvh] max-h-[100dvh] sm:h-[86vh] sm:max-h-[860px] sm:max-w-4xl lg:max-w-5xl bg-white sm:rounded-2xl shadow-2xl flex flex-row overflow-hidden border border-slate-200/80 animate-in zoom-in-95 duration-200 relative"
+        className="w-full h-[100dvh] max-h-[100dvh] sm:h-[86vh] sm:max-h-[860px] sm:max-w-4xl lg:max-w-5xl bg-white dark:bg-[#141414] sm:rounded-2xl shadow-2xl flex flex-row overflow-hidden border border-slate-200/80 dark:border-[#2a2a2a] animate-in zoom-in-95 duration-200 relative"
       >
         {/* Desktop Left Sidebar: Chat History */}
         <div className="hidden md:flex h-full">
@@ -161,7 +161,7 @@ export default function AIAssistantModal() {
         />
 
         {/* Main Learning Content Area */}
-        <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-white">
+        <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-white dark:bg-[#141414]">
           {/* Header with Top Pill and Downward Drag Gesture */}
           <AIAssistantHeader
             item={activeChat}
@@ -178,7 +178,7 @@ export default function AIAssistantModal() {
           {/* Scrollable Content Body */}
           <div
             ref={scrollContainerRef}
-            className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 bg-slate-50/40"
+            className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 bg-slate-50/40 dark:bg-[#101010]"
           >
             {isLoading && <AILoading />}
 

@@ -60,14 +60,14 @@ export default function SectionPage() {
 
   if (!currentCategory || !currentSection) {
     return (
-      <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 shadow-sm">
-        <h2 className="text-xl font-bold text-slate-800">Section Not Found</h2>
-        <p className="mt-2 text-sm text-slate-500">
+      <div className="p-8 text-center bg-white dark:bg-[#171717] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] shadow-sm">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-[#f5f5f5]">Section Not Found</h2>
+        <p className="mt-2 text-sm text-slate-500 dark:text-[#a3a3a3]">
           The requested section does not exist or may have been moved.
         </p>
         <Link
           to={`/roadmap/${ROADMAP_DATA[0].id}/${ROADMAP_DATA[0].sections[0].id}`}
-          className="inline-block mt-4 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors"
+          className="inline-block mt-4 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors shadow-xs"
         >
           Go to First Topic
         </Link>
@@ -87,23 +87,23 @@ export default function SectionPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Active Section Header Banner Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6 transition-all">
+      <div className="bg-white dark:bg-[#171717] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] shadow-sm p-5 md:p-6 transition-all">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           
           {/* Left: Badge + Section Title */}
           <div className="flex items-center space-x-3.5 min-w-0">
             <div
-              className={`w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-sm flex-shrink-0 shadow-xs ${
+              className={`w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-sm flex-shrink-0 shadow-xs dark:bg-[#1f1f1f] dark:border dark:border-[#333333] ${
                 currentCategory.color || "bg-amber-100 text-amber-700 border border-amber-200"
               }`}
             >
               {currentCategory.badgeText || "JS"}
             </div>
             <div className="min-w-0">
-              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+              <div className="text-xs font-semibold text-slate-400 dark:text-[#737373] uppercase tracking-wide">
                 {currentCategory.number}. {currentCategory.title}
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight truncate">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#f5f5f5] tracking-tight truncate">
                 {currentSection.number} {currentSection.title}
               </h2>
             </div>
@@ -113,10 +113,10 @@ export default function SectionPage() {
           <div className="flex items-center justify-between md:justify-end gap-5">
             <div className="text-right">
               <div className="flex items-center justify-end gap-3 text-xs mb-1.5">
-                <span className="font-semibold text-slate-600">
+                <span className="font-semibold text-slate-600 dark:text-[#a3a3a3]">
                   {sectionStats.completed} / {sectionStats.total} completed
                 </span>
-                <span className="font-bold text-emerald-600 text-sm">
+                <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
                   {sectionStats.percentage}%
                 </span>
               </div>
@@ -126,13 +126,13 @@ export default function SectionPage() {
                   max={sectionStats.total}
                   height="h-2"
                   colorClass="bg-emerald-500"
-                  bgClass="bg-slate-100"
+                  bgClass="bg-slate-100 dark:bg-[#333333]"
                 />
               </div>
             </div>
 
             {/* Prev / Next Section Arrow Buttons */}
-            <div className="flex items-center space-x-1 pl-2 border-l border-slate-200">
+            <div className="flex items-center space-x-1 pl-2 border-l border-slate-200 dark:border-[#2a2a2a]">
               <button
                 type="button"
                 disabled={!prevSection}
@@ -143,8 +143,8 @@ export default function SectionPage() {
                 title={prevSection ? `Previous: ${prevSection.sectionTitle}` : "First section"}
                 className={`p-2 rounded-xl border transition-colors ${
                   prevSection
-                    ? "text-slate-600 hover:text-slate-900 hover:bg-slate-100 border-slate-200 bg-white shadow-xs"
-                    : "text-slate-300 border-slate-100 cursor-not-allowed bg-slate-50"
+                    ? "text-slate-600 dark:text-[#d4d4d4] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#262626] border-slate-200 dark:border-[#333333] bg-white dark:bg-[#1f1f1f] shadow-xs"
+                    : "text-slate-300 dark:text-[#525252] border-slate-100 dark:border-[#222222] cursor-not-allowed bg-slate-50 dark:bg-[#141414]"
                 }`}
                 aria-label="Previous section"
               >
@@ -160,8 +160,8 @@ export default function SectionPage() {
                 title={nextSection ? `Next: ${nextSection.sectionTitle}` : "Last section"}
                 className={`p-2 rounded-xl border transition-colors ${
                   nextSection
-                    ? "text-slate-600 hover:text-slate-900 hover:bg-slate-100 border-slate-200 bg-white shadow-xs"
-                    : "text-slate-300 border-slate-100 cursor-not-allowed bg-slate-50"
+                    ? "text-slate-600 dark:text-[#d4d4d4] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#262626] border-slate-200 dark:border-[#333333] bg-white dark:bg-[#1f1f1f] shadow-xs"
+                    : "text-slate-300 dark:text-[#525252] border-slate-100 dark:border-[#222222] cursor-not-allowed bg-slate-50 dark:bg-[#141414]"
                 }`}
                 aria-label="Next section"
               >
@@ -174,7 +174,7 @@ export default function SectionPage() {
       </div>
 
       {/* Main Learning Items / Topics List */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden divide-y divide-slate-100">
+      <div className="bg-white dark:bg-[#171717] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-[#242424]">
         {currentSection.topics.map((topic) => {
           const hasSubtopics = Boolean(topic.subtopics && topic.subtopics.length > 0);
           const isExpanded = Boolean(expandedTopics[topic.id]);
@@ -208,7 +208,9 @@ export default function SectionPage() {
             <div
               key={topic.id}
               className={`transition-colors ${
-                topicCompleted ? "bg-emerald-50/20" : "bg-white hover:bg-slate-50/70"
+                topicCompleted
+                  ? "bg-emerald-50/20 dark:bg-[#171717]"
+                  : "bg-white dark:bg-[#171717] hover:bg-slate-50/70 dark:hover:bg-[#1f1f1f]"
               }`}
             >
               {/* Topic Row */}
@@ -221,8 +223,8 @@ export default function SectionPage() {
                     aria-label={`Mark ${topic.title} as ${topicCompleted ? "incomplete" : "complete"}`}
                     className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all flex-shrink-0 cursor-pointer ${
                       topicCompleted
-                        ? "bg-emerald-500 text-white shadow-xs shadow-emerald-200"
-                        : "border-2 border-slate-300 hover:border-slate-400 bg-white"
+                        ? "bg-emerald-500 text-white shadow-xs shadow-emerald-200 dark:shadow-none"
+                        : "border-2 border-slate-300 dark:border-[#404040] hover:border-slate-400 dark:hover:border-[#606060] bg-white dark:bg-[#1f1f1f]"
                     }`}
                   >
                     {topicCompleted && <FiCheck className="w-4 h-4 stroke-[3]" />}
@@ -231,20 +233,20 @@ export default function SectionPage() {
                   {/* Topic Number & Name */}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-semibold text-slate-400">
+                      <span className="text-xs font-semibold text-slate-400 dark:text-[#737373]">
                         {topic.number}
                       </span>
                       <span
                         className={`text-sm sm:text-base font-medium transition-colors ${
                           topicCompleted
-                            ? "text-slate-700 line-through decoration-slate-300"
-                            : "text-slate-800"
+                            ? "text-slate-700 dark:text-[#8e8e8e] line-through decoration-slate-300 dark:decoration-[#525252]"
+                            : "text-slate-800 dark:text-[#f5f5f5]"
                         }`}
                       >
                         {topic.title}
                       </span>
                       {hasSubtopics && (
-                        <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                        <span className="text-xs font-medium text-slate-500 dark:text-[#a3a3a3] bg-slate-100 dark:bg-[#262626] px-2 py-0.5 rounded-full">
                           {subtopicsCompletedCount} / {subtopicsTotal} subtopics
                         </span>
                       )}
@@ -269,19 +271,18 @@ export default function SectionPage() {
                         allSubtopics: topic.subtopics?.map((s) => s.title) || []
                       }, e.currentTarget);
                     }}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100/90 active:bg-indigo-100 rounded-lg transition-colors border border-indigo-100/70 cursor-pointer shadow-2xs"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100/90 active:bg-indigo-100 dark:bg-[#1f1f1f] dark:border-[#333333] dark:text-[#d4d4d4] dark:hover:bg-[#262626] dark:hover:text-white rounded-lg transition-colors border border-indigo-100/70 cursor-pointer shadow-2xs"
                     title={`Learn about ${topic.title} with AI`}
                     aria-label={`Teach me about ${topic.title}`}
                   >
-                    <LuSparkles className="w-3.5 h-3.5 text-indigo-600" />
-                    {/* <span className="hidden xs:inline sm:inline">Teach Me</span> */}
+                    <LuSparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                   </button>
 
                   {hasSubtopics ? (
                     <button
                       type="button"
                       onClick={() => toggleTopicExpand(topic.id)}
-                      className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-1 text-xs"
+                      className="p-1.5 text-slate-400 dark:text-[#a3a3a3] hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#262626] rounded-lg transition-colors flex items-center gap-1 text-xs"
                       aria-label="Toggle subtopics"
                     >
                       <span className="hidden sm:inline">Subtopics</span>
@@ -292,20 +293,20 @@ export default function SectionPage() {
                       )}
                     </button>
                   ) : (
-                    <FiChevronRight className="w-4 h-4 text-slate-300" />
+                    <FiChevronRight className="w-4 h-4 text-slate-300 dark:text-[#525252]" />
                   )}
                 </div>
               </div>
 
               {/* Collapsible Subtopics List */}
               {hasSubtopics && isExpanded && (
-                <div className="bg-slate-50/80 border-t border-slate-100 px-6 sm:px-12 py-2 space-y-1.5 animate-in fade-in duration-150">
+                <div className="bg-slate-50/80 dark:bg-[#141414] border-t border-slate-100 dark:border-[#262626] px-6 sm:px-12 py-2 space-y-1.5 animate-in fade-in duration-150">
                   {topic.subtopics.map((sub) => {
                     const subCompleted = isCompleted(sub.id);
                     return (
                       <div
                         key={sub.id}
-                        className="flex items-center justify-between py-1.5 px-3 rounded-lg hover:bg-white transition-colors"
+                        className="flex items-center justify-between py-1.5 px-3 rounded-lg hover:bg-white dark:hover:bg-[#1e1e1e] transition-colors"
                       >
                         <div className="flex items-center space-x-3 min-w-0">
                           <button
@@ -315,7 +316,7 @@ export default function SectionPage() {
                             className={`w-5 h-5 rounded-md flex items-center justify-center transition-all flex-shrink-0 cursor-pointer ${
                               subCompleted
                                 ? "bg-emerald-500 text-white"
-                                : "border-2 border-slate-300 hover:border-slate-400 bg-white"
+                                : "border-2 border-slate-300 dark:border-[#404040] hover:border-slate-400 dark:hover:border-[#606060] bg-white dark:bg-[#1f1f1f]"
                             }`}
                           >
                             {subCompleted && <FiCheck className="w-3.5 h-3.5 stroke-[3]" />}
@@ -323,8 +324,8 @@ export default function SectionPage() {
                           <span
                             className={`text-sm ${
                               subCompleted
-                                ? "text-slate-600 line-through decoration-slate-300"
-                                : "text-slate-700"
+                                ? "text-slate-600 dark:text-[#8e8e8e] line-through decoration-slate-300 dark:decoration-[#525252]"
+                                : "text-slate-700 dark:text-[#d4d4d4]"
                             }`}
                           >
                             {sub.title}
@@ -349,15 +350,15 @@ export default function SectionPage() {
                                 allSubtopics: topic.subtopics?.map((s) => s.title) || []
                               }, e.currentTarget);
                             }}
-                            className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50/90 hover:bg-indigo-100 rounded-md transition-colors border border-indigo-100/60 cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50/90 hover:bg-indigo-100 dark:bg-[#1f1f1f] dark:border-[#333333] dark:text-[#d4d4d4] dark:hover:bg-[#262626] dark:hover:text-white rounded-md transition-colors border border-indigo-100/60 cursor-pointer"
                             title={`Learn about ${sub.title} with AI`}
                             aria-label={`Teach me about ${sub.title}`}
                           >
-                            <LuSparkles className="w-3 h-3 text-indigo-500" />
+                            <LuSparkles className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
                             <span>Teach Me</span>
                           </button>
 
-                          <span className="text-[11px] text-slate-400">
+                          <span className="text-[11px] text-slate-400 dark:text-[#737373]">
                             {subCompleted ? "Completed" : "Pending"}
                           </span>
                         </div>
@@ -373,10 +374,10 @@ export default function SectionPage() {
 
       {/* Subsequent Sections in Current Category (Matching Screenshot) */}
       <div className="pt-2">
-        <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-1">
+        <div className="text-xs font-bold text-slate-400 dark:text-[#737373] uppercase tracking-wider mb-3 px-1">
           Other Sections in {currentCategory.title}
         </div>
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm divide-y divide-slate-100 overflow-hidden">
+        <div className="bg-white dark:bg-[#171717] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] shadow-sm divide-y divide-slate-100 dark:divide-[#242424] overflow-hidden">
           {currentCategory.sections.map((sec) => {
             const isCurrent = sec.id === sectionId;
             const secStats = getSectionStats(sec);
@@ -387,8 +388,8 @@ export default function SectionPage() {
                 to={`/roadmap/${currentCategory.id}/${sec.id}`}
                 className={`flex items-center justify-between p-4 transition-colors group ${
                   isCurrent
-                    ? "bg-indigo-50/50 font-semibold"
-                    : "hover:bg-slate-50"
+                    ? "bg-indigo-50/50 dark:bg-[#242424] font-semibold"
+                    : "hover:bg-slate-50 dark:hover:bg-[#1f1f1f]"
                 }`}
               >
                 <div className="flex items-center space-x-3.5 min-w-0">
@@ -401,15 +402,15 @@ export default function SectionPage() {
                         <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-sky-500"></span>
                       </span>
                     ) : (
-                      <FiCircle className="w-5 h-5 text-slate-300 group-hover:text-slate-400" />
+                      <FiCircle className="w-5 h-5 text-slate-300 dark:text-[#525252] group-hover:text-slate-400 dark:group-hover:text-[#737373]" />
                     )}
                   </span>
                   <div className="min-w-0">
-                    <span className="text-sm sm:text-base text-slate-800 group-hover:text-indigo-600 transition-colors">
+                    <span className="text-sm sm:text-base text-slate-800 dark:text-[#e5e5e5] group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                       {sec.number} {sec.title}
                     </span>
                     {isCurrent && (
-                      <span className="ml-2 text-[10px] uppercase font-bold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded">
+                      <span className="ml-2 text-[10px] uppercase font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-[#303030] px-2 py-0.5 rounded">
                         Active
                       </span>
                     )}
@@ -417,10 +418,10 @@ export default function SectionPage() {
                 </div>
 
                 <div className="flex items-center space-x-4 flex-shrink-0">
-                  <span className="text-xs font-semibold text-slate-400">
+                  <span className="text-xs font-semibold text-slate-400 dark:text-[#737373]">
                     {secStats.completed} / {secStats.total}
                   </span>
-                  <FiChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
+                  <FiChevronRight className="w-4 h-4 text-slate-300 dark:text-[#525252] group-hover:text-slate-600 dark:group-hover:text-[#a3a3a3] transition-colors" />
                 </div>
               </Link>
             );

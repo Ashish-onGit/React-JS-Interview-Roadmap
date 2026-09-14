@@ -26,11 +26,11 @@ export default function AIAssistantHeader({
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
-      className="flex flex-col border-b border-slate-200/90 bg-white sticky top-0 z-10 flex-shrink-0 select-none cursor-grab active:cursor-grabbing touch-none"
+      className="flex flex-col border-b border-slate-200/90 dark:border-[#262626] bg-white dark:bg-[#151515] sticky top-0 z-10 flex-shrink-0 select-none cursor-grab active:cursor-grabbing touch-none"
     >
       {/* Top Drag Handle Pill Bar */}
       <div className="w-full flex justify-center pt-2 pb-0.5" title="Drag down to minimize">
-        <div className="w-10 sm:w-12 h-1.5 rounded-full bg-slate-300 hover:bg-slate-400 active:bg-indigo-400 transition-colors" />
+        <div className="w-10 sm:w-12 h-1.5 rounded-full bg-slate-300 dark:bg-[#404040] hover:bg-slate-400 dark:hover:bg-[#555555] active:bg-indigo-400 transition-colors" />
       </div>
 
       {/* Main Header Row: Title, Breadcrumbs, and Actions */}
@@ -41,7 +41,7 @@ export default function AIAssistantHeader({
           <button
             type="button"
             onClick={onToggleMobileDrawer}
-            className="p-1.5 -ml-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg md:hidden cursor-pointer flex-shrink-0"
+            className="p-1.5 -ml-1 text-slate-500 dark:text-[#a3a3a3] hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#242424] rounded-lg md:hidden cursor-pointer flex-shrink-0"
             title="Open AI chats history"
             aria-label="Open AI chats history"
           >
@@ -56,16 +56,16 @@ export default function AIAssistantHeader({
           {/* Title + Subtitle */}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 min-w-0">
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-tight truncate">
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-[#f5f5f5] leading-tight truncate">
                 {title}
               </h3>
-              <span className="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 border border-indigo-100 px-1.5 py-0.5 rounded whitespace-nowrap flex-shrink-0">
+              <span className="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-[#d4d4d4] bg-indigo-50 dark:bg-[#242424] border border-indigo-100 dark:border-[#333333] px-1.5 py-0.5 rounded whitespace-nowrap flex-shrink-0">
                 AI Tutor
               </span>
             </div>
 
             {breadcrumbText && (
-              <p className="text-[11px] text-slate-400 truncate leading-tight mt-0.5 font-medium">
+              <p className="text-[11px] text-slate-400 dark:text-[#737373] truncate leading-tight mt-0.5 font-medium">
                 {breadcrumbText}
               </p>
             )}
@@ -81,7 +81,7 @@ export default function AIAssistantHeader({
               disabled={isLoading}
               title="Regenerate lesson"
               aria-label="Regenerate lesson"
-              className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors disabled:opacity-40 cursor-pointer"
+              className="p-1.5 sm:p-2 text-slate-400 dark:text-[#a3a3a3] hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#242424] rounded-xl transition-colors disabled:opacity-40 cursor-pointer"
             >
               <FiRefreshCw
                 className={`w-4 h-4 ${isLoading ? "animate-spin text-indigo-600" : ""}`}
@@ -95,7 +95,7 @@ export default function AIAssistantHeader({
             onClick={onMinimize}
             title="Minimize AI Assistant"
             aria-label="Minimize AI Assistant"
-            className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 text-slate-400 dark:text-[#a3a3a3] hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#242424] rounded-xl transition-colors cursor-pointer"
           >
             <FiChevronDown className="w-5 h-5" />
           </button>
@@ -105,7 +105,7 @@ export default function AIAssistantHeader({
             type="button"
             onClick={onClose}
             aria-label="Close AI Assistant"
-            className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 text-slate-400 dark:text-[#a3a3a3] hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#242424] rounded-xl transition-colors cursor-pointer"
           >
             <FiX className="w-5 h-5" />
           </button>

@@ -65,7 +65,7 @@ export default function MobileBottomNav({ onOpenSearch }) {
 
       <nav
         aria-label="Mobile Topic Navigation"
-        className="pointer-events-auto bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_25px_rgba(0,0,0,0.07)] px-3 py-2"
+        className="pointer-events-auto bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md border-t border-slate-200/90 dark:border-[#262626] shadow-[0_-4px_25px_rgba(0,0,0,0.07)] dark:shadow-[0_-4px_25px_rgba(0,0,0,0.5)] px-3 py-2 transition-colors duration-150"
       >
       {/* Single Row: Prev Button | Wide Search Bar with Current Topic | Next Button */}
       <div className="flex items-center justify-between gap-2">
@@ -77,8 +77,8 @@ export default function MobileBottomNav({ onOpenSearch }) {
           aria-label={prevSection ? `Previous topic: ${prevSection.sectionTitle}` : "No previous topic"}
           className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold transition-all flex-shrink-0 ${
             prevSection
-              ? "text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 active:scale-95 cursor-pointer"
-              : "text-slate-300 bg-slate-50 cursor-not-allowed"
+              ? "text-slate-700 dark:text-[#d4d4d4] hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-[#1c1c1c] hover:bg-slate-200 dark:hover:bg-[#262626] border border-transparent dark:border-[#2a2a2a] active:scale-95 cursor-pointer"
+              : "text-slate-300 dark:text-[#404040] bg-slate-50 dark:bg-[#141414] cursor-not-allowed"
           }`}
         >
           <FiChevronLeft className="w-4 h-4" />
@@ -90,20 +90,20 @@ export default function MobileBottomNav({ onOpenSearch }) {
           type="button"
           onClick={onOpenSearch}
           aria-label="Search topics across roadmap"
-          className="flex-1 min-w-0 flex items-center justify-between px-3 py-2 text-xs bg-slate-100 hover:bg-slate-200/80 rounded-xl border border-slate-200/80 transition-all active:scale-[0.99] group cursor-pointer"
+          className="flex-1 min-w-0 flex items-center justify-between px-3 py-2 text-xs bg-slate-100 dark:bg-[#181818] hover:bg-slate-200/80 dark:hover:bg-[#202020] rounded-xl border border-slate-200/80 dark:border-[#2a2a2a] transition-all active:scale-[0.99] group cursor-pointer"
         >
           <div className="flex items-center gap-2 min-w-0">
-            <FiSearch className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition-colors flex-shrink-0" />
-            <span className="text-slate-400 group-hover:text-slate-600 truncate font-normal text-[11px] sm:text-xs">
+            <FiSearch className="w-3.5 h-3.5 text-slate-400 dark:text-[#737373] group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex-shrink-0" />
+            <span className="text-slate-400 dark:text-[#737373] group-hover:text-slate-600 dark:group-hover:text-[#a3a3a3] truncate font-normal text-[11px] sm:text-xs">
               Search topics...
             </span>
           </div>
 
           {currentSectionInfo && (
-            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-600 bg-white border border-slate-200/70 px-1.5 py-0.5 rounded shadow-2xs flex-shrink-0 ml-1.5 truncate max-w-[110px]">
+            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-600 dark:text-[#d4d4d4] bg-white dark:bg-[#222222] border border-slate-200/70 dark:border-[#333333] px-1.5 py-0.5 rounded shadow-2xs flex-shrink-0 ml-1.5 truncate max-w-[110px]">
               <span className="truncate">{currentSectionInfo.sectionNumber}</span>
               {sectionStats && (
-                <span className="text-emerald-600 font-bold">
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold">
                   {sectionStats.percentage}%
                 </span>
               )}
@@ -120,7 +120,7 @@ export default function MobileBottomNav({ onOpenSearch }) {
           className={`flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-semibold shadow-xs transition-all flex-shrink-0 ${
             nextSection
               ? "text-white bg-indigo-600 hover:bg-indigo-700 active:scale-95 shadow-indigo-200 cursor-pointer"
-              : "text-slate-300 bg-slate-100 cursor-not-allowed"
+              : "text-slate-300 dark:text-[#404040] bg-slate-100 dark:bg-[#141414] cursor-not-allowed"
           }`}
         >
           <span>Next</span>

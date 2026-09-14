@@ -2,10 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-primary: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f1f5f9;
+  --bg-hover: #f1f5f9;
+  --border-primary: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+}
+
+.dark,
+[data-theme="dark"] {
+  --bg-primary: #0f0f0f;
+  --bg-surface: #171717;
+  --bg-elevated: #1f1f1f;
+  --bg-hover: #262626;
+  --border-primary: #2a2a2a;
+  --border-subtle: #222222;
+  --text-primary: #f5f5f5;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
+  --input-background: #1a1a1a;
+  --input-border: #303030;
+}
+
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-800 antialiased selection:bg-indigo-600 selection:text-white;
+    @apply bg-slate-50 text-slate-800 antialiased selection:bg-indigo-600 selection:text-white transition-colors duration-150;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  .dark body {
+    @apply bg-[#0f0f0f] text-[#f5f5f5];
   }
 
   #root {
@@ -32,6 +63,18 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #111111;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
 }
 
 /* Keyboard focus accessible ring */

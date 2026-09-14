@@ -22,7 +22,7 @@ export default function AIMinimizedPill({ variant = "floating" }) {
   if (variant === "mobile") {
     return (
       <div
-        className="w-full h-11 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-2xl shadow-xl px-3 flex items-center justify-between transition-all select-none animate-in slide-in-from-bottom-2 duration-200 text-white"
+        className="w-full h-11 bg-slate-900/95 dark:bg-[#1c1c1c] backdrop-blur-md border border-slate-700/80 dark:border-[#333333] rounded-2xl shadow-xl px-3 flex items-center justify-between transition-all select-none animate-in slide-in-from-bottom-2 duration-200 text-white"
       >
         <div
           onClick={restoreAssistant}
@@ -57,7 +57,7 @@ export default function AIMinimizedPill({ variant = "floating" }) {
           <button
             type="button"
             onClick={restoreAssistant}
-            className="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-indigo-300 font-bold text-xs cursor-pointer transition-colors"
+            className="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-white/10 dark:bg-white/10 hover:bg-white/20 text-indigo-300 dark:text-[#d4d4d4] font-bold text-xs cursor-pointer transition-colors"
           >
             <span className="text-[11px]">Restore</span>
             <FiChevronUp className="w-3.5 h-3.5" />
@@ -82,7 +82,7 @@ export default function AIMinimizedPill({ variant = "floating" }) {
   // Desktop floating widget: Centered "Dynamic Island" style floating pill
   return (
     <div
-      className="hidden md:flex fixed bottom-6 left-1/2 -translate-x-1/2 z-40 items-center gap-3 pl-3.5 pr-2.5 py-2 bg-slate-900/95 hover:bg-slate-900 text-white rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.35)] border border-slate-700/80 backdrop-blur-md transition-all group select-none animate-in slide-in-from-bottom-3 duration-200"
+      className="hidden md:flex fixed bottom-6 left-1/2 -translate-x-1/2 z-40 items-center gap-3 pl-3.5 pr-2.5 py-2 bg-slate-900/95 hover:bg-slate-900 dark:bg-[#181818] dark:hover:bg-[#1f1f1f] text-white rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.35)] border border-slate-700/80 dark:border-[#333333] backdrop-blur-md transition-all group select-none animate-in slide-in-from-bottom-3 duration-200"
     >
       {/* Clickable Area to Restore */}
       <div
@@ -101,7 +101,7 @@ export default function AIMinimizedPill({ variant = "floating" }) {
           <span className="text-xs font-bold text-white max-w-[200px] truncate leading-tight">
             {title}
           </span>
-          <span className="h-3.5 w-px bg-slate-700" />
+          <span className="h-3.5 w-px bg-slate-700 dark:bg-[#333333]" />
           <div className="text-[11px] text-slate-400 flex items-center gap-1.5 leading-none">
             {isGenerating ? (
               <span className="text-indigo-400 font-medium flex items-center gap-1 animate-pulse">
@@ -116,13 +116,13 @@ export default function AIMinimizedPill({ variant = "floating" }) {
       </div>
 
       {/* Action Buttons: Expand and Dismiss */}
-      <div className="flex items-center gap-1.5 pl-1 border-l border-slate-700/80">
+      <div className="flex items-center gap-1.5 pl-1 border-l border-slate-700/80 dark:border-[#333333]">
         <button
           type="button"
           onClick={restoreAssistant}
           title="Expand AI Assistant"
           aria-label="Expand AI Assistant"
-          className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-600/80 hover:bg-indigo-600 text-white text-[11px] font-semibold transition-colors cursor-pointer shadow-2xs"
+          className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-600/80 hover:bg-indigo-600 dark:bg-[#282828] dark:hover:bg-[#333333] text-white dark:text-[#f5f5f5] dark:border dark:border-[#3a3a3a] text-[11px] font-semibold transition-colors cursor-pointer shadow-2xs"
         >
           <span>Expand</span>
           <FiChevronUp className="w-3.5 h-3.5" />

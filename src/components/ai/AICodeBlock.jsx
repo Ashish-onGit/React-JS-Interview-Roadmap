@@ -17,9 +17,9 @@ export default function AICodeBlock({ code, language = "javascript", explanation
   if (!code) return null;
 
   return (
-    <div className="rounded-xl overflow-hidden border border-slate-800 bg-[#0f172a] shadow-md my-3">
+    <div className="rounded-xl overflow-hidden border border-slate-800 dark:border-[#262626] bg-[#0f172a] dark:bg-[#0c0c0c] shadow-md my-3">
       {/* Code Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-slate-800/80 border-b border-slate-700/80 text-xs text-slate-400">
+      <div className="flex items-center justify-between px-4 py-2 bg-slate-800/80 dark:bg-[#151515] border-b border-slate-700/80 dark:border-[#262626] text-xs text-slate-400 dark:text-[#a3a3a3]">
         <span className="font-mono uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">
           {language}
         </span>
@@ -27,7 +27,7 @@ export default function AICodeBlock({ code, language = "javascript", explanation
           type="button"
           onClick={handleCopy}
           aria-label={copied ? "Copied code" : "Copy code"}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-slate-300 hover:text-white bg-slate-700/60 hover:bg-slate-700 transition-colors"
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-slate-300 dark:text-[#d4d4d4] hover:text-white bg-slate-700/60 dark:bg-[#222222] hover:bg-slate-700 dark:hover:bg-[#2c2c2c] transition-colors cursor-pointer"
         >
           {copied ? (
             <>
@@ -44,7 +44,7 @@ export default function AICodeBlock({ code, language = "javascript", explanation
       </div>
 
       {/* Code Content - Horizontally scrollable */}
-      <div className="p-4 overflow-x-auto text-xs sm:text-sm font-mono text-slate-200 leading-relaxed scrollbar-thin">
+      <div className="p-4 overflow-x-auto text-xs sm:text-sm font-mono text-slate-200 dark:text-[#ececec] leading-relaxed scrollbar-thin">
         <pre className="whitespace-pre">
           <code>{code}</code>
         </pre>
@@ -52,8 +52,8 @@ export default function AICodeBlock({ code, language = "javascript", explanation
 
       {/* Optional Explanation */}
       {explanation && (
-        <div className="px-4 py-2.5 bg-slate-900/60 border-t border-slate-800 text-xs text-slate-400 leading-relaxed">
-          <span className="font-semibold text-slate-300">Explanation: </span>
+        <div className="px-4 py-2.5 bg-slate-900/60 dark:bg-[#111111] border-t border-slate-800 dark:border-[#262626] text-xs text-slate-400 dark:text-[#a3a3a3] leading-relaxed">
+          <span className="font-semibold text-slate-300 dark:text-[#d4d4d4]">Explanation: </span>
           {explanation}
         </div>
       )}

@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ProgressProvider } from "./context/ProgressContext";
 import { AIProvider } from "./context/AIContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import MainLayout from "./layouts/MainLayout";
 import SectionPage from "./pages/SectionPage";
 import CategoryRedirect from "./pages/CategoryRedirect";
@@ -14,8 +15,9 @@ export default function App() {
   const defaultPath = `/roadmap/${initialCategory}/${initialSection}`;
 
   return (
-    <ProgressProvider>
-      <AIProvider>
+    <ThemeProvider>
+      <ProgressProvider>
+        <AIProvider>
         <BrowserRouter>
           <Routes>
             <Route element={<MainLayout />}>
@@ -29,5 +31,6 @@ export default function App() {
         </BrowserRouter>
       </AIProvider>
     </ProgressProvider>
+  </ThemeProvider>
   );
 }

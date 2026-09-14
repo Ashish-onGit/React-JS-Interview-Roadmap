@@ -44,7 +44,7 @@ export function InlineMarkdown({ text }) {
           return (
             <code
               key={idx}
-              className="px-1.5 py-0.5 mx-0.5 rounded-md bg-indigo-50 text-indigo-700 font-mono text-[11px] sm:text-xs border border-indigo-100 font-medium"
+              className="px-1.5 py-0.5 mx-0.5 rounded-md bg-indigo-50 dark:bg-[#242424] text-indigo-700 dark:text-[#e5e5e5] font-mono text-[11px] sm:text-xs border border-indigo-100 dark:border-[#333333] font-medium"
             >
               {seg.slice(1, -1)}
             </code>
@@ -54,7 +54,7 @@ export function InlineMarkdown({ text }) {
         // Bold + Italic: ***text***
         if (seg.startsWith("***") && seg.endsWith("***") && seg.length > 6) {
           return (
-            <strong key={idx} className="font-bold italic text-slate-900">
+            <strong key={idx} className="font-bold italic text-slate-900 dark:text-white">
               {seg.slice(3, -3)}
             </strong>
           );
@@ -66,7 +66,7 @@ export function InlineMarkdown({ text }) {
           (seg.startsWith("__") && seg.endsWith("__") && seg.length > 4)
         ) {
           return (
-            <strong key={idx} className="font-semibold text-slate-900">
+            <strong key={idx} className="font-semibold text-slate-900 dark:text-white">
               {seg.slice(2, -2)}
             </strong>
           );
@@ -78,7 +78,7 @@ export function InlineMarkdown({ text }) {
           (seg.startsWith("_") && seg.endsWith("_") && seg.length > 2)
         ) {
           return (
-            <em key={idx} className="italic text-slate-800">
+            <em key={idx} className="italic text-slate-800 dark:text-[#e5e5e5]">
               {seg.slice(1, -1)}
             </em>
           );
@@ -87,7 +87,7 @@ export function InlineMarkdown({ text }) {
         // Strikethrough: ~~text~~
         if (seg.startsWith("~~") && seg.endsWith("~~") && seg.length > 4) {
           return (
-            <span key={idx} className="line-through text-slate-400">
+            <span key={idx} className="line-through text-slate-400 dark:text-[#737373]">
               {seg.slice(2, -2)}
             </span>
           );
@@ -102,7 +102,7 @@ export function InlineMarkdown({ text }) {
               href={linkMatch[2]}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-indigo-600 hover:text-indigo-800 underline font-medium"
+              className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 underline font-medium"
             >
               {linkMatch[1]}
             </a>
@@ -292,7 +292,7 @@ export default function AIMarkdownMessage({ content }) {
   const blocks = parseMarkdownBlocks(content);
 
   return (
-    <div className="space-y-3.5 text-slate-800 text-xs sm:text-sm leading-relaxed">
+    <div className="space-y-3.5 text-slate-800 dark:text-[#d4d4d4] text-xs sm:text-sm leading-relaxed">
       {blocks.map((block, index) => {
         switch (block.type) {
           case "code":
@@ -309,15 +309,15 @@ export default function AIMarkdownMessage({ content }) {
             return (
               <div
                 key={index}
-                className="my-2.5 overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-2xs scrollbar-thin"
+                className="my-2.5 overflow-x-auto rounded-xl border border-slate-200 dark:border-[#2a2a2a] bg-white dark:bg-[#171717] shadow-2xs scrollbar-thin"
               >
                 <table className="w-full text-left text-xs border-collapse min-w-[280px]">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-700">
+                    <tr className="bg-slate-50 dark:bg-[#202020] border-b border-slate-200 dark:border-[#2a2a2a] text-slate-700 dark:text-[#f5f5f5]">
                       {block.headers.map((header, hIdx) => (
                         <th
                           key={hIdx}
-                          className={`py-2 px-2.5 sm:py-2.5 sm:px-3.5 font-bold text-slate-900 border-r last:border-r-0 border-slate-200/60 bg-indigo-50/30 text-xs ${
+                          className={`py-2 px-2.5 sm:py-2.5 sm:px-3.5 font-bold text-slate-900 dark:text-[#f5f5f5] border-r last:border-r-0 border-slate-200/60 dark:border-[#2a2a2a] bg-indigo-50/30 dark:bg-[#202020] text-xs ${
                             hIdx === 0 ? "min-w-[80px] sm:min-w-[100px]" : "min-w-[120px] sm:min-w-[150px]"
                           }`}
                         >
@@ -326,21 +326,21 @@ export default function AIMarkdownMessage({ content }) {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 text-slate-700">
+                  <tbody className="divide-y divide-slate-100 dark:divide-[#242424] text-slate-700 dark:text-[#d4d4d4]">
                     {block.rows.map((row, rIdx) => (
                       <tr
                         key={rIdx}
                         className={
                           rIdx % 2 === 0
-                            ? "bg-white hover:bg-slate-50/60 transition-colors"
-                            : "bg-slate-50/40 hover:bg-indigo-50/20 transition-colors"
+                            ? "bg-white dark:bg-[#171717] hover:bg-slate-50/60 dark:hover:bg-[#1f1f1f] transition-colors"
+                            : "bg-slate-50/40 dark:bg-[#1a1a1a] hover:bg-indigo-50/20 dark:hover:bg-[#222222] transition-colors"
                         }
                       >
                         {row.map((cell, cIdx) => (
                           <td
                             key={cIdx}
-                            className={`py-2 px-2.5 sm:py-2.5 sm:px-3.5 text-slate-700 border-r last:border-r-0 border-slate-200/60 align-top leading-relaxed text-xs ${
-                              cIdx === 0 ? "font-semibold text-slate-800" : ""
+                            className={`py-2 px-2.5 sm:py-2.5 sm:px-3.5 text-slate-700 dark:text-[#d4d4d4] border-r last:border-r-0 border-slate-200/60 dark:border-[#242424] align-top leading-relaxed text-xs ${
+                              cIdx === 0 ? "font-semibold text-slate-800 dark:text-[#f5f5f5]" : ""
                             }`}
                           >
                             <InlineMarkdown text={cell} />
@@ -358,9 +358,9 @@ export default function AIMarkdownMessage({ content }) {
               return (
                 <h3
                   key={index}
-                  className="text-base sm:text-lg font-bold text-slate-900 mt-3.5 mb-2 flex items-center gap-1.5 border-b border-slate-100 pb-1"
+                  className="text-base sm:text-lg font-bold text-slate-900 dark:text-[#f5f5f5] mt-3.5 mb-2 flex items-center gap-1.5 border-b border-slate-100 dark:border-[#262626] pb-1"
                 >
-                  <span className="w-1 h-4 bg-indigo-600 rounded-full inline-block shrink-0"></span>
+                  <span className="w-1 h-4 bg-indigo-600 dark:bg-indigo-500 rounded-full inline-block shrink-0"></span>
                   <InlineMarkdown text={block.text} />
                 </h3>
               );
@@ -369,9 +369,9 @@ export default function AIMarkdownMessage({ content }) {
               return (
                 <h4
                   key={index}
-                  className="text-sm sm:text-base font-bold text-slate-900 mt-3 mb-1.5 flex items-center gap-1.5"
+                  className="text-sm sm:text-base font-bold text-slate-900 dark:text-[#f5f5f5] mt-3 mb-1.5 flex items-center gap-1.5"
                 >
-                  <span className="w-1 h-3.5 bg-indigo-600 rounded-full inline-block shrink-0"></span>
+                  <span className="w-1 h-3.5 bg-indigo-600 dark:bg-indigo-500 rounded-full inline-block shrink-0"></span>
                   <InlineMarkdown text={block.text} />
                 </h4>
               );
@@ -379,7 +379,7 @@ export default function AIMarkdownMessage({ content }) {
             return (
               <h5
                 key={index}
-                className="text-xs sm:text-sm font-bold text-slate-900 mt-2.5 mb-1 flex items-center gap-1.5 text-indigo-900"
+                className="text-xs sm:text-sm font-bold text-slate-900 dark:text-[#f5f5f5] mt-2.5 mb-1 flex items-center gap-1.5 text-indigo-900 dark:text-indigo-400"
               >
                 <span className="w-1 h-2.5 bg-indigo-500 rounded-full inline-block shrink-0"></span>
                 <InlineMarkdown text={block.text} />
@@ -391,7 +391,7 @@ export default function AIMarkdownMessage({ content }) {
             return (
               <blockquote
                 key={index}
-                className="my-2.5 pl-3.5 py-2 border-l-3 border-indigo-500 bg-indigo-50/50 rounded-r-xl text-xs sm:text-sm text-indigo-950 font-normal leading-relaxed"
+                className="my-2.5 pl-3.5 py-2 border-l-3 border-indigo-500 dark:border-l-[#4a4a4a] bg-indigo-50/50 dark:bg-[#191919] rounded-r-xl text-xs sm:text-sm text-indigo-950 dark:text-[#d4d4d4] font-normal leading-relaxed"
               >
                 <InlineMarkdown text={block.text} />
               </blockquote>
@@ -403,7 +403,7 @@ export default function AIMarkdownMessage({ content }) {
                 {block.items.map((item, itemIdx) => (
                   <li
                     key={itemIdx}
-                    className="flex items-start gap-2 text-xs sm:text-sm text-slate-700 leading-relaxed"
+                    className="flex items-start gap-2 text-xs sm:text-sm text-slate-700 dark:text-[#d4d4d4] leading-relaxed"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 shrink-0"></span>
                     <span className="flex-1">
@@ -420,9 +420,9 @@ export default function AIMarkdownMessage({ content }) {
                 {block.items.map((item, itemIdx) => (
                   <li
                     key={itemIdx}
-                    className="flex items-start gap-2 text-xs sm:text-sm text-slate-700 leading-relaxed"
+                    className="flex items-start gap-2 text-xs sm:text-sm text-slate-700 dark:text-[#d4d4d4] leading-relaxed"
                   >
-                    <span className="inline-flex items-center justify-center w-4 h-4 rounded-md bg-indigo-100 text-indigo-700 font-bold text-[10px] shrink-0 mt-0.5">
+                    <span className="inline-flex items-center justify-center w-4 h-4 rounded-md bg-indigo-100 dark:bg-[#262626] text-indigo-700 dark:text-[#d4d4d4] font-bold text-[10px] shrink-0 mt-0.5">
                       {itemIdx + 1}
                     </span>
                     <span className="flex-1">
@@ -438,7 +438,7 @@ export default function AIMarkdownMessage({ content }) {
             return (
               <p
                 key={index}
-                className="text-xs sm:text-sm text-slate-700 leading-relaxed my-1.5"
+                className="text-xs sm:text-sm text-slate-700 dark:text-[#d4d4d4] leading-relaxed my-1.5"
               >
                 <InlineMarkdown text={block.text} />
               </p>
