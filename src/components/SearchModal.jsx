@@ -1,8 +1,51 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiSearch, FiX, FiCheckCircle, FiCircle, FiChevronRight } from "react-icons/fi";
+import {
+  FiSearch,
+  FiX,
+  FiCheckCircle,
+  FiCircle,
+  FiChevronRight,
+  FiTrendingUp,
+  FiLayers,
+  FiBookOpen
+} from "react-icons/fi";
 import { ROADMAP_DATA } from "../data/roadmap";
 import { useProgress } from "../hooks/useProgress";
+
+const POPULAR_SEARCHES = [
+  "useState & useEffect",
+  "Closures",
+  "Event Loop",
+  "React 19 Hooks",
+  "Redux Toolkit",
+  "Custom Hooks",
+  "Server Components",
+  "Promises & Async",
+  "Performance",
+  "Virtual DOM"
+];
+
+function HighlightMatch({ text, query }) {
+  if (!query?.trim()) return <span>{text}</span>;
+  const clean = query.trim();
+  const index = text.toLowerCase().indexOf(clean.toLowerCase());
+  if (index === -1) return <span>{text}</span>;
+
+  const before = text.slice(0, index);
+  const match = text.slice(index, index + clean.length);
+  const after = text.slice(index + clean.length);
+
+  return (
+    <span>
+      {before}
+      <span className="text-indigo-600 font-bold bg-indigo-50 px-1 py-0.5 rounded">
+        {match}
+      </span>
+      {after}
+    </span>
+  );
+}
 
 export default function SearchModal({ isOpen, onClose, onSelectTopic }) {
   const [query, setQuery] = useState("");
@@ -20,7 +63,7 @@ export default function SearchModal({ isOpen, onClose, onSelectTopic }) {
     }
   }, [isOpen]);
 
-  // Global Ctrl+K / Cmd+K listener
+  // Global Ctrl+K / Cmd+K and Escape listener
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape" && isOpen) {
@@ -91,6 +134,7 @@ export default function SearchModal({ isOpen, onClose, onSelectTopic }) {
   const results = useMemo(() => {
     const cleanQuery = query.trim().toLowerCase();
     if (!cleanQuery) return [];
+
     return searchableItems
       .filter((item) => {
         return (
@@ -98,6 +142,18 @@ export default function SearchModal({ isOpen, onClose, onSelectTopic }) {
           item.path.toLowerCase().includes(cleanQuery) ||
           (item.number && item.number.toLowerCase().includes(cleanQuery))
         );
+      })
+      .sort((a, b) => {
+        const aTitleMatch = a.title.toLowerCase().includes(cleanQuery);
+        const bTitleMatch = b.title.toLowerCase().includes(cleanQuery);
+        if (aTitleMatch && !bTitleMatch) return -1;
+        if (!aTitleMatch && bTitleMatch) return 1;
+
+        const aStart = a.title.toLowerCase().startsWith(cleanQuery);
+        const bStart = b.title.toLowerCase().startsWith(cleanQuery);
+        if (aStart && !bStart) return -1;
+        if (!aStart && bStart) return 1;
+        return 0;
       })
       .slice(0, 40); // limit to top 40 for speed
   }, [query, searchableItems]);
@@ -114,72 +170,163 @@ export default function SearchModal({ isOpen, onClose, onSelectTopic }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4 bg-slate-900/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-start sm:items-center sm:pt-14 sm:px-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
       role="dialog"
       aria-modal="true"
       aria-labelledby="search-modal-title"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-150"
+        className="relative w-full h-[90dvh] sm:h-auto sm:max-h-[82vh] sm:max-w-2xl bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-6 sm:slide-in-from-top-4 duration-200 border-0 sm:border sm:border-slate-200/80"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Mobile Drag Indicator */}
+        <div className="w-10 h-1 rounded-full bg-slate-300 mx-auto mt-2.5 mb-1 sm:hidden shrink-0" />
+
         {/* Search header */}
-        <div className="flex items-center px-4 py-3.5 border-b border-slate-100 gap-3">
-          <FiSearch className="w-5 h-5 text-slate-400 flex-shrink-0" />
+        <div className="flex items-center px-3.5 sm:px-4 py-3 border-b border-slate-100 gap-2.5 sm:gap-3 bg-white">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+            <FiSearch className="w-4 h-4" />
+          </div>
+
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search categories, sections, topics or subtopics..."
-            className="w-full text-base bg-transparent border-none outline-none text-slate-800 placeholder:text-slate-400"
+            placeholder="Search topics, questions, hooks..."
+            className="flex-1 text-sm sm:text-base bg-transparent border-0 outline-none focus:outline-none focus:ring-0 text-slate-900 placeholder:text-slate-400 font-normal"
             aria-label="Search topics"
           />
+
           {query && (
             <button
-              onClick={() => setQuery("")}
-              className="text-slate-400 hover:text-slate-600 p-1 rounded-md"
+              type="button"
+              onClick={() => {
+                setQuery("");
+                inputRef.current?.focus();
+              }}
+              className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors shrink-0"
               aria-label="Clear search"
             >
               <FiX className="w-4 h-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-block px-2 py-0.5 text-xs font-semibold text-slate-400 bg-slate-100 border border-slate-200 rounded">
+
+          {/* Mobile Cancel Button */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="sm:hidden text-xs font-semibold text-slate-600 hover:text-slate-900 px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 active:scale-95 transition-colors shrink-0"
+          >
+            Cancel
+          </button>
+
+          {/* Desktop ESC Shortcut */}
+          <kbd className="hidden sm:inline-block px-2 py-0.5 text-[11px] font-semibold text-slate-400 bg-slate-100 border border-slate-200 rounded shrink-0">
             ESC
           </kbd>
         </div>
 
         {/* Results body */}
-        <div className="flex-1 overflow-y-auto p-2">
+        <div className="flex-1 overflow-y-auto p-2.5 sm:p-3 space-y-3">
           {query.trim() === "" ? (
-            <div className="p-8 text-center text-slate-400">
-              <FiSearch className="w-8 h-8 mx-auto mb-2 text-slate-300" />
-              <p className="text-sm font-medium">Type anything to search across the entire roadmap</p>
-              <p className="text-xs text-slate-400 mt-1">E.g., "Variables", "Closures", "useEffect", "Redux", "CI/CD"</p>
+            <div className="space-y-4 py-2 px-1">
+              {/* Popular Searches */}
+              <div>
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 px-1">
+                  <FiTrendingUp className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Popular Searches</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                  {POPULAR_SEARCHES.map((term, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setQuery(term)}
+                      className="text-xs px-2.5 py-1.5 rounded-xl bg-slate-50 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200/80 hover:border-indigo-200 transition-all active:scale-95 text-left font-medium"
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Browse by Categories */}
+              <div>
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 px-1">
+                  <FiLayers className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Browse by Module</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  {ROADMAP_DATA.slice(0, 6).map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => {
+                        const firstSection = cat.sections[0];
+                        if (firstSection) {
+                          navigate(`/roadmap/${cat.id}/${firstSection.id}`);
+                          onClose();
+                        }
+                      }}
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/70 hover:bg-slate-100/90 border border-slate-200/70 transition-colors text-left group"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-6 h-6 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-700 shrink-0">
+                          {cat.number}
+                        </span>
+                        <span className="text-xs font-semibold text-slate-800 truncate group-hover:text-indigo-600 transition-colors">
+                          {cat.title}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-slate-400 shrink-0 pl-1">
+                        {cat.sections.length} topics
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : results.length === 0 ? (
-            <div className="p-8 text-center text-slate-400">
-              <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3 text-slate-400">
-                <FiSearch className="w-6 h-6" />
+            <div className="p-8 text-center text-slate-400 space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
+                <FiSearch className="w-5 h-5" />
               </div>
-              <p className="text-base font-semibold text-slate-700">No matching topics found</p>
-              <p className="text-sm text-slate-400 mt-1">We couldn't find anything matching "{query}"</p>
+              <div>
+                <p className="text-sm sm:text-base font-semibold text-slate-700">
+                  No matching topics found
+                </p>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  We couldn't find anything matching "{query}"
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
+              >
+                Clear Search
+              </button>
             </div>
           ) : (
             <div className="space-y-1">
-              <div className="px-3 py-1 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                Matches ({results.length})
+              <div className="px-2 py-1 flex items-center justify-between text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                <span>Matching Topics</span>
+                <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full text-[11px]">
+                  {results.length}
+                </span>
               </div>
+
               {results.map((item) => {
                 const completed = isCompleted(item.id);
                 return (
                   <button
                     key={`${item.type}-${item.id}`}
                     onClick={() => handleSelect(item)}
-                    className="w-full text-left p-3 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200/60 transition-all flex items-center justify-between group"
+                    className="w-full text-left p-2.5 sm:p-3 rounded-xl hover:bg-slate-50 active:bg-slate-100 border border-transparent hover:border-slate-200/70 transition-all flex items-center justify-between group cursor-pointer"
                   >
-                    <div className="flex items-center space-x-3 min-w-0">
+                    <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0 flex-1">
                       <span className="flex-shrink-0">
                         {completed ? (
                           <FiCheckCircle className="w-4 h-4 text-emerald-500" />
@@ -187,16 +334,24 @@ export default function SearchModal({ isOpen, onClose, onSelectTopic }) {
                           <FiCircle className="w-4 h-4 text-slate-300 group-hover:text-slate-400" />
                         )}
                       </span>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold text-slate-800 truncate">
-                            {item.title}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs sm:text-sm font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                            <HighlightMatch text={item.title} query={query} />
                           </span>
-                          <span className="text-[10px] font-medium uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 flex-shrink-0">
+                          <span
+                            className={`text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded flex-shrink-0 ${
+                              item.type === "section"
+                                ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                                : item.type === "topic"
+                                ? "bg-indigo-50 text-indigo-700 border border-indigo-100"
+                                : "bg-amber-50 text-amber-700 border border-amber-100"
+                            }`}
+                          >
                             {item.type}
                           </span>
                         </div>
-                        <div className="text-xs text-slate-400 truncate mt-0.5">
+                        <div className="text-[11px] text-slate-400 truncate mt-0.5">
                           {item.path}
                         </div>
                       </div>
@@ -210,13 +365,25 @@ export default function SearchModal({ isOpen, onClose, onSelectTopic }) {
         </div>
 
         {/* Search footer */}
-        <div className="px-4 py-2.5 bg-slate-50 border-t border-slate-100 text-xs text-slate-500 flex items-center justify-between">
-          <span>
+        <div className="px-4 py-2.5 bg-slate-50 border-t border-slate-100 text-xs text-slate-500 flex items-center justify-between shrink-0">
+          <span className="hidden sm:inline">
             Navigate with clicks or keyboard
           </span>
-          <span className="text-slate-400">
+          <span className="sm:hidden text-slate-400">
+            {results.length > 0
+              ? `Found ${results.length} topics`
+              : "Tap any topic to open"}
+          </span>
+          <span className="hidden sm:inline text-slate-400">
             Press <strong>ESC</strong> to exit
           </span>
+          <button
+            type="button"
+            onClick={onClose}
+            className="sm:hidden text-xs font-semibold text-indigo-600"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>
