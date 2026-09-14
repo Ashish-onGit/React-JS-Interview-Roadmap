@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAIAssistant } from "../../context/AIContext";
 import AIAssistantHeader from "./AIAssistantHeader";
 import AIChatSidebar from "./AIChatSidebar";
@@ -31,6 +31,11 @@ export default function AIAssistantModal() {
 
   const modalRef = useRef(null);
   const scrollContainerRef = useRef(null);
+
+  // Drag down to minimize state
+  const [dragY, setDragY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartYRef = useRef(0);
 
   // Lock body scroll only when modal is open
   useEffect(() => {
@@ -77,6 +82,47 @@ export default function AIAssistantModal() {
     }
   };
 
+  // Drag header downwards to minimize gesture handlers
+  const handleHeaderPointerDown = (e) => {
+    // Ignore interactive button and input elements
+    if (e.target.closest("button") || e.target.closest("input") || e.target.closest("a")) {
+      return;
+    }
+    dragStartYRef.current = e.clientY;
+    setIsDragging(true);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleHeaderPointerMove = (e) => {
+    if (!isDragging) return;
+    const delta = e.clientY - dragStartYRef.current;
+    if (delta > 0) {
+      setDragY(delta);
+    } else {
+      setDragY(0);
+    }
+  };
+
+  const handleHeaderPointerUp = (e) => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+
+    // Threshold: if dragged downwards past 80px, minimize the assistant
+    if (dragY > 80) {
+      minimizeAssistant();
+    }
+    setDragY(0);
+  };
+
   return (
     <div
       onClick={handleBackdropClick}
@@ -87,6 +133,11 @@ export default function AIAssistantModal() {
     >
       <div
         ref={modalRef}
+        style={{
+          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+          transition: isDragging ? "none" : "transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out",
+          opacity: dragY > 0 ? Math.max(0.35, 1 - dragY / 420) : 1
+        }}
         className="w-full h-[100dvh] max-h-[100dvh] sm:h-[86vh] sm:max-h-[860px] sm:max-w-4xl lg:max-w-5xl bg-white sm:rounded-2xl shadow-2xl flex flex-row overflow-hidden border border-slate-200/80 animate-in zoom-in-95 duration-200 relative"
       >
         {/* Desktop Left Sidebar: Chat History */}
@@ -111,13 +162,16 @@ export default function AIAssistantModal() {
 
         {/* Main Learning Content Area */}
         <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-white">
-          {/* Header */}
+          {/* Header with Top Pill and Downward Drag Gesture */}
           <AIAssistantHeader
             item={activeChat}
             onClose={closeAssistant}
             onMinimize={minimizeAssistant}
             onRegenerate={regenerate}
             onToggleMobileDrawer={() => setIsMobileDrawerOpen(true)}
+            onPointerDown={handleHeaderPointerDown}
+            onPointerMove={handleHeaderPointerMove}
+            onPointerUp={handleHeaderPointerUp}
             isLoading={isLoading}
           />
 
