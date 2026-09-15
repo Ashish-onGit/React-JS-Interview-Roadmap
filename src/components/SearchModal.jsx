@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { FiSearch, FiX, FiCheck, FiChevronRight, FiFolder, FiCornerDownLeft } from "react-icons/fi";
+import {
+  FiSearch,
+  FiX,
+  FiChevronRight,
+  FiTrendingUp,
+  FiLayers,
+  FiCheckCircle,
+  FiCircle
+} from "react-icons/fi";
 import { ROADMAP_DATA } from "../data/roadmap";
 import { useProgress } from "../hooks/useProgress";
 import { modalVariants, backdropVariants } from "../utils/motionVariants";
