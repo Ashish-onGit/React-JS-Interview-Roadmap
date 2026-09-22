@@ -7,13 +7,16 @@ import {
   FiChevronDown,
   FiChevronLeft,
   FiCircle,
-  FiCheckCircle
+  FiCheckCircle,
+  FiArrowRight
 } from "react-icons/fi";
 import { LuSparkles } from "react-icons/lu";
 import { ROADMAP_DATA } from "../data/roadmap";
 import { useProgress } from "../hooks/useProgress";
 import { useAIAssistant } from "../context/AIContext";
+import { useQuestionModal } from "../hooks/useQuestionModal";
 import ProgressBar from "../components/ProgressBar";
+import QuickRevision from "../components/revision/QuickRevision";
 import { accordionVariants, buttonTapScale } from "../utils/motionVariants";
 
 export default function SectionPage() {
@@ -26,6 +29,7 @@ export default function SectionPage() {
     getSectionStats
   } = useProgress();
   const { openAssistant } = useAIAssistant();
+  const { openQuestions } = useQuestionModal();
 
   // Expanded subtopics accordion state
   const [expandedTopics, setExpandedTopics] = useState({});
@@ -87,9 +91,11 @@ export default function SectionPage() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Active Section Header Banner Card */}
-      <div className="bg-white dark:bg-[#171717] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] shadow-sm p-5 md:p-6 transition-all">
+    <div className="flex flex-col lg:flex-row gap-6 items-start animate-in fade-in duration-200">
+      {/* Main Section Content Column */}
+      <div className="flex-1 min-w-0 space-y-6 w-full">
+        {/* Active Section Header Banner Card */}
+        <div className="bg-white dark:bg-[#171717] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] shadow-sm p-5 md:p-6 transition-all">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           
           {/* Left: Badge + Section Title */}
@@ -259,7 +265,7 @@ export default function SectionPage() {
                   </div>
                 </div>
 
-                {/* Right Action / AI Assistant / Expand */}
+                {/* Right Action / AI Assistant / Questions / Expand */}
                 <div className="flex items-center space-x-2 flex-shrink-0">
                   {/* AI Teach Me Button */}
                   <motion.button
@@ -282,6 +288,32 @@ export default function SectionPage() {
                     aria-label={`Teach me about ${topic.title}`}
                   >
                     <LuSparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                  </motion.button>
+
+                  {/* Interview Questions Button */}
+                  <motion.button
+                    type="button"
+                    whileTap={buttonTapScale}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openQuestions({
+                        categoryId: currentCategory.id,
+                        categoryTitle: currentCategory.title,
+                        sectionId: currentSection.id,
+                        sectionNumber: currentSection.number,
+                        sectionTitle: currentSection.title,
+                        topicId: topic.id,
+                        topicNumber: topic.number,
+                        topicTitle: topic.title,
+                        allSubtopics: topic.subtopics?.map((s) => s.title) || []
+                      }, e.currentTarget);
+                    }}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100/90 active:bg-emerald-100 dark:bg-[#1a261f] dark:border-[#263e2e] dark:text-emerald-400 dark:hover:bg-[#223528] rounded-lg transition-colors border border-emerald-100/70 cursor-pointer shadow-2xs"
+                    title={`Interview questions for ${topic.title}`}
+                    aria-label={`Interview questions for ${topic.title}`}
+                  >
+                    <span className="hidden sm:inline">Questions</span>
+                    <FiArrowRight className="w-3.5 h-3.5" />
                   </motion.button>
 
                   {hasSubtopics ? (
@@ -349,7 +381,7 @@ export default function SectionPage() {
                               </span>
                             </div>
 
-                            <div className="flex items-center space-x-2.5 flex-shrink-0">
+                            <div className="flex items-center space-x-2 flex-shrink-0">
                               {/* Subtopic AI Teach Me Button */}
                               <motion.button
                                 type="button"
@@ -374,6 +406,34 @@ export default function SectionPage() {
                               >
                                 <LuSparkles className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
                                 {/* <span>Teach Me</span> */}
+                              </motion.button>
+
+                              {/* Subtopic Questions Button */}
+                              <motion.button
+                                type="button"
+                                whileTap={buttonTapScale}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openQuestions({
+                                    categoryId: currentCategory.id,
+                                    categoryTitle: currentCategory.title,
+                                    sectionId: currentSection.id,
+                                    sectionNumber: currentSection.number,
+                                    sectionTitle: currentSection.title,
+                                    topicId: topic.id,
+                                    topicNumber: topic.number,
+                                    topicTitle: topic.title,
+                                    subtopicId: sub.id,
+                                    subtopicTitle: sub.title,
+                                    allSubtopics: topic.subtopics?.map((s) => s.title) || []
+                                  }, e.currentTarget);
+                                }}
+                                className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-emerald-600 hover:text-emerald-700 bg-emerald-50/90 hover:bg-emerald-100 dark:bg-[#1a261f] dark:border-[#263e2e] dark:text-emerald-400 dark:hover:bg-[#223528] rounded-md transition-colors border border-emerald-100/60 cursor-pointer shadow-2xs"
+                                title={`Interview questions for ${sub.title}`}
+                                aria-label={`Interview questions for ${sub.title}`}
+                              >
+                                <span>Questions</span>
+                                <FiArrowRight className="w-3 h-3" />
                               </motion.button>
 
                               <span className="text-[11px] text-slate-400 dark:text-[#737373]">
@@ -447,6 +507,15 @@ export default function SectionPage() {
             );
           })}
         </div>
+      </div>
+    </div>
+
+      {/* Right Side Quick Revision Panel */}
+      <div className="w-full lg:w-[320px] xl:w-[360px] flex-shrink-0">
+        <QuickRevision
+          currentSection={currentSection}
+          currentCategory={currentCategory}
+        />
       </div>
     </div>
   );

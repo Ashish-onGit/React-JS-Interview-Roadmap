@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ProgressProvider } from "./context/ProgressContext";
 import { AIProvider } from "./context/AIContext";
+import { QuestionProvider } from "./context/QuestionContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import MainLayout from "./layouts/MainLayout";
 import SectionPage from "./pages/SectionPage";
@@ -18,19 +19,21 @@ export default function App() {
     <ThemeProvider>
       <ProgressProvider>
         <AIProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<Navigate to={defaultPath} replace />} />
-              <Route path="/roadmap" element={<Navigate to={defaultPath} replace />} />
-              <Route path="/roadmap/:categoryId" element={<CategoryRedirect />} />
-              <Route path="/roadmap/:categoryId/:sectionId" element={<SectionPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </AIProvider>
-    </ProgressProvider>
-  </ThemeProvider>
+          <QuestionProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route element={<MainLayout />}>
+                  <Route path="/" element={<Navigate to={defaultPath} replace />} />
+                  <Route path="/roadmap" element={<Navigate to={defaultPath} replace />} />
+                  <Route path="/roadmap/:categoryId" element={<CategoryRedirect />} />
+                  <Route path="/roadmap/:categoryId/:sectionId" element={<SectionPage />} />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </QuestionProvider>
+        </AIProvider>
+      </ProgressProvider>
+    </ThemeProvider>
   );
 }
