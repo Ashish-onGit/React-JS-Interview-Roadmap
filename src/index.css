@@ -82,3 +82,84 @@
   outline: 2px solid #6366f1;
   outline-offset: 2px;
 }
+
+/* VS Code Dark+ Theme for Code Editor */
+.vscode-editor-syntax {
+  color: #d4d4d4;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.vscode-editor-syntax .token.keyword {
+  color: #c586c0; /* pink/purple: import, export, default, from, return, const, let */
+  font-weight: 500;
+}
+
+.vscode-editor-syntax .token.function {
+  color: #dcdcaa; /* yellow: Component, useState, setCount, etc. */
+}
+
+.vscode-editor-syntax .token.string {
+  color: #ce9178; /* warm orange/coral: 'react', "container" */
+}
+
+.vscode-editor-syntax .token.punctuation {
+  color: #d4d4d4; /* gray: {}, (), ;, , */
+}
+
+.vscode-editor-syntax .token.operator {
+  color: #d4d4d4; /* operators: =>, =, + */
+}
+
+.vscode-editor-syntax .token.tag {
+  color: #4ec9b0; /* teal: <div, <button, <h2> */
+}
+
+.vscode-editor-syntax .token.tag .token.punctuation {
+  color: #808080; /* gray: <, </, > */
+}
+
+.vscode-editor-syntax .token.tag .token.tag {
+  color: #4ec9b0; /* component / tag name */
+}
+
+.vscode-editor-syntax .token.attr-name {
+  color: #9cdcfe; /* light sky blue: className, onClick */
+}
+
+.vscode-editor-syntax .token.attr-value {
+  color: #ce9178; /* string attribute values */
+}
+
+.vscode-editor-syntax .token.attr-value .token.punctuation {
+  color: #ce9178;
+}
+
+.vscode-editor-syntax .token.attr-equals {
+  color: #d4d4d4;
+}
+
+.vscode-editor-syntax .token.number {
+  color: #b5cea8; /* light olive green: 0, 1, 42 */
+}
+
+.vscode-editor-syntax .token.boolean {
+  color: #569cd6; /* blue: true, false */
+}
+
+.vscode-editor-syntax .token.comment {
+  color: #6a9955; /* olive green: // comments */
+  font-style: italic;
+}
+
+.vscode-editor-syntax .token.class-name {
+  color: #4ec9b0; /* teal: Component, App */
+}
+
+.vscode-editor-syntax .token.plain-text {
+  color: #d4d4d4;
+}
+
+.vscode-editor-syntax .token.script {
+  color: #d4d4d4;
+}
+

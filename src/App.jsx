@@ -7,6 +7,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import MainLayout from "./layouts/MainLayout";
 import SectionPage from "./pages/SectionPage";
 import CategoryRedirect from "./pages/CategoryRedirect";
+import AIInterviewPage from "./pages/AIInterviewPage";
 import NotFound from "./pages/NotFound";
 import { ROADMAP_DATA } from "./data/roadmap";
 
@@ -27,6 +28,7 @@ export default function App() {
                   <Route path="/roadmap" element={<Navigate to={defaultPath} replace />} />
                   <Route path="/roadmap/:categoryId" element={<CategoryRedirect />} />
                   <Route path="/roadmap/:categoryId/:sectionId" element={<SectionPage />} />
+                  <Route path="/ai-interview" element={<AIInterviewPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
               </Routes>

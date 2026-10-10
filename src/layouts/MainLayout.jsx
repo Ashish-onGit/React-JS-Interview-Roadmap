@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiSidebar } from "react-icons/fi";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import MobileSidebar from "../components/MobileSidebar";
@@ -19,6 +18,7 @@ const SIDEBAR_PREF_KEY = "react-js-interview-sidebar-open";
 
 export default function MainLayout() {
   const location = useLocation();
+  const isAiInterview = location.pathname.startsWith("/ai-interview");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
@@ -71,31 +71,40 @@ export default function MainLayout() {
         isDesktopSidebarOpen={isDesktopSidebarOpen}
         onToggleDesktopSidebar={toggleDesktopSidebar}
         onOpenSearch={() => setIsSearchOpen(true)}
+        isAiInterview={isAiInterview}
       />
 
       {/* Main Two-Column Body */}
       <div className="flex-1 flex w-full max-w-[1600px] mx-auto">
-        {/* Desktop Left Sidebar */}
-        <Sidebar
-          isOpen={isDesktopSidebarOpen}
-          onOpenSearch={() => setIsSearchOpen(true)}
-          onOpenResetModal={() => setIsResetModalOpen(true)}
-          onCollapse={() => {
-            setIsDesktopSidebarOpen(false);
-            try {
-              localStorage.setItem(SIDEBAR_PREF_KEY, JSON.stringify(false));
-            } catch {
-              // ignore
-            }
-          }}
-        />
+        {/* Desktop Left Sidebar (Only in Roadmap, hidden in AI Interview) */}
+        {!isAiInterview && (
+          <Sidebar
+            isOpen={isDesktopSidebarOpen}
+            onOpenSearch={() => setIsSearchOpen(true)}
+            onOpenResetModal={() => setIsResetModalOpen(true)}
+            onCollapse={() => {
+              setIsDesktopSidebarOpen(false);
+              try {
+                localStorage.setItem(SIDEBAR_PREF_KEY, JSON.stringify(false));
+              } catch {
+                // ignore
+              }
+            }}
+          />
+        )}
 
         {/* Main Content Area */}
         <main
-          className={`flex-1 min-w-0 p-4 sm:p-6 lg:p-8 ${
-            isMinimized ? "pb-44 sm:pb-48 md:pb-12" : "pb-28 sm:pb-32 md:pb-8"
-          } transition-all duration-200 ${
-            isDesktopSidebarOpen ? "max-w-5xl xl:max-w-7xl 2xl:max-w-[1550px]" : "max-w-6xl xl:max-w-7xl 2xl:max-w-[1550px] mx-auto"
+          className={`flex-1 min-w-0 transition-all duration-200 ${
+            isAiInterview
+              ? "p-3 sm:p-5 lg:p-6 pb-6 w-full max-w-[1600px] mx-auto"
+              : `p-4 sm:p-6 lg:p-8 ${
+                  isMinimized ? "pb-44 sm:pb-48 md:pb-12" : "pb-28 sm:pb-32 md:pb-8"
+                } ${
+                  isDesktopSidebarOpen
+                    ? "max-w-5xl xl:max-w-7xl 2xl:max-w-[1550px]"
+                    : "max-w-6xl xl:max-w-7xl 2xl:max-w-[1550px] mx-auto"
+                }`
           }`}
         >
           <AnimatePresence mode="wait" initial={false}>
@@ -114,17 +123,21 @@ export default function MainLayout() {
       </div>
 
       {/* Mobile Drawer */}
-      <MobileSidebar
-        isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
-        onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenResetModal={() => setIsResetModalOpen(true)}
-      />
+      {!isAiInterview && (
+        <MobileSidebar
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          onOpenResetModal={() => setIsResetModalOpen(true)}
+        />
+      )}
 
       {/* Mobile Bottom Navigation to Switch Between Topics */}
-      <MobileBottomNav
-        onOpenSearch={() => setIsSearchOpen(true)}
-      />
+      {!isAiInterview && (
+        <MobileBottomNav
+          onOpenSearch={() => setIsSearchOpen(true)}
+        />
+      )}
 
       {/* Global Search Modal */}
       <SearchModal
@@ -139,8 +152,8 @@ export default function MainLayout() {
         onConfirm={resetAllProgress}
       />
 
-      {/* Desktop Floating Minimized AI Pill */}
-      <AIMinimizedPill variant="floating" />
+      {/* Desktop Floating Minimized AI Pill (Only in Roadmap) */}
+      {!isAiInterview && <AIMinimizedPill variant="floating" />}
 
       {/* AI Assistant Learning Modal */}
       <AIAssistantModal />

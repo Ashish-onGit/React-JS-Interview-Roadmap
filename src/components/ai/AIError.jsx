@@ -23,9 +23,9 @@ export default function AIError({ error, onRetry, onClose }) {
       {isKeyError && (
         <div className="text-left bg-slate-50 dark:bg-[#191919] border border-slate-200 dark:border-[#303030] rounded-xl p-3 text-xs text-slate-600 dark:text-[#d4d4d4] font-mono mb-6">
           <p className="text-slate-500 dark:text-[#a3a3a3] font-sans text-[11px] mb-1 font-semibold">
-            To enable the AI Assistant, add to .env:
+            To enable the AI Assistant, configure in environment variables:
           </p>
-          <code>VITE_GROQ_API_KEY=gsk_...</code>
+          <code>GROQ_API_KEY=gsk_...</code>
         </div>
       )}
 

@@ -90,12 +90,6 @@ export default function InterviewQuestionsModal() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, closeQuestions]);
 
-  const handleBackdropClick = (e) => {
-    if (e.target === e.currentTarget) {
-      closeQuestions();
-    }
-  };
-
   // Map of question ID to original index in unfiltered list
   const questionIndexMap = useMemo(() => {
     const map = new Map();
@@ -115,7 +109,6 @@ export default function InterviewQuestionsModal() {
             initial="initial"
             animate="animate"
             exit="exit"
-            onClick={handleBackdropClick}
             className={`fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/80 flex items-center justify-center ${
               isMaximized ? "p-0" : "p-0 sm:p-4 md:p-6"
             }`}
@@ -275,6 +268,8 @@ export default function InterviewQuestionsModal() {
                               index={originalIndex}
                               isCompleted={completedSet.has(item.id)}
                               onToggleComplete={toggleComplete}
+                              topicName={topicName}
+                              roadmapPath={roadmapPath}
                             />
                           );
                         })

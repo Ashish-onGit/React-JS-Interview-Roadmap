@@ -1,16 +1,8 @@
 import { REVISION_SYSTEM_PROMPT, buildRevisionPrompt } from "../ai/revisionPrompt";
+import { executeChatCompletion } from "./groqClient";
 
-const GROQ_MODEL =
+export const GROQ_MODEL =
   import.meta.env.VITE_GROQ_MODEL || "openai/gpt-oss-120b";
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-
-const MODEL_FALLBACKS = [
-  GROQ_MODEL,
-  "openai/gpt-oss-120b",
-  "openai/gpt-oss-20b",
-  "qwen/qwen3.8-27b",
-  "llama-3.3-70b-versatile"
-];
 
 function getApiKey() {
   return (
@@ -113,73 +105,7 @@ export function normalizeRevisionResponse(parsed, defaultTitle = "Quick Revision
 }
 
 /**
- * Executes a chat completion against Groq with fallback model support.
- */
-async function executeGroqRequest(apiKey, bodyParams) {
-  const modelsToTry = Array.from(new Set(MODEL_FALLBACKS));
-  let lastError = null;
-
-  for (const modelName of modelsToTry) {
-    try {
-      const response = await fetch(GROQ_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          ...bodyParams,
-          model: modelName
-        })
-      });
-
-      if (!response.ok) {
-        let errMsg = `Groq API error (${response.status})`;
-        try {
-          const errData = await response.json();
-          if (errData?.error?.message) {
-            errMsg = errData.error.message;
-          }
-        } catch {
-          // ignore
-        }
-
-        if (
-          response.status === 404 ||
-          errMsg.toLowerCase().includes("does not exist") ||
-          errMsg.toLowerCase().includes("access to it")
-        ) {
-          console.warn(`Model ${modelName} unavailable for revision notes, trying fallback...`);
-          lastError = new Error(errMsg);
-          continue;
-        }
-
-        if (response.status === 401) {
-          throw new Error("Invalid Groq API key. Please check your .env configuration.");
-        } else if (response.status === 429) {
-          throw new Error("Groq rate limit exceeded. Please wait a few seconds and try again.");
-        }
-
-        throw new Error(errMsg);
-      }
-
-      return await response.json();
-    } catch (err) {
-      lastError = err;
-      if (
-        err.message?.includes("Invalid Groq API key") ||
-        err.message?.includes("rate limit exceeded")
-      ) {
-        throw err;
-      }
-    }
-  }
-
-  throw lastError || new Error("Failed to communicate with Groq AI service.");
-}
-
-/**
- * Generates structured quick revision notes from Groq.
+ * Generates structured quick revision notes via secure backend serverless endpoint.
  */
 export async function generateRevisionNotes({
   categoryTitle,
@@ -187,13 +113,7 @@ export async function generateRevisionNotes({
   sectionTitle,
   topics = []
 }) {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error(
-      "AI assistant is not configured yet. Please add your Groq API key (VITE_GROQ_API_KEY) to your .env file."
-    );
-  }
-
+  const fallbackKey = getApiKey();
   const userPrompt = buildRevisionPrompt({
     categoryTitle,
     sectionNumber,
@@ -201,14 +121,17 @@ export async function generateRevisionNotes({
     topics
   });
 
-  const data = await executeGroqRequest(apiKey, {
-    messages: [
-      { role: "system", content: REVISION_SYSTEM_PROMPT },
-      { role: "user", content: userPrompt }
-    ],
-    temperature: 0.25,
-    response_format: { type: "json_object" }
-  });
+  const data = await executeChatCompletion(
+    {
+      messages: [
+        { role: "system", content: REVISION_SYSTEM_PROMPT },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.25,
+      response_format: { type: "json_object" }
+    },
+    fallbackKey
+  );
 
   const rawContent = data.choices?.[0]?.message?.content;
   if (!rawContent) {

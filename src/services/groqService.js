@@ -1,17 +1,8 @@
 import { LEARNING_SYSTEM_PROMPT, buildLessonPrompt, buildFollowUpSystemPrompt } from "../prompts/learningPrompt";
+import { executeChatCompletion } from "./groqClient";
 
 export const GROQ_MODEL =
   import.meta.env.VITE_GROQ_MODEL || "openai/gpt-oss-120b";
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-
-// Fallback models in priority order if default model isn't active on an account
-const MODEL_FALLBACKS = [
-  GROQ_MODEL,
-  "openai/gpt-oss-120b",
-  "openai/gpt-oss-20b",
-  "qwen/qwen3.8-27b",
-  "llama-3.3-70b-versatile"
-];
 
 // In-memory cache for session
 const lessonCache = new Map();
@@ -106,75 +97,7 @@ function cleanAndParseJSON(rawContent) {
 }
 
 /**
- * Helper to call Groq with automatic model fallbacks if default model is not accessible
- */
-async function executeGroqChat(apiKey, bodyParams) {
-  const modelsToTry = Array.from(new Set(MODEL_FALLBACKS));
-  let lastError = null;
-
-  for (const modelName of modelsToTry) {
-    try {
-      const response = await fetch(GROQ_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          ...bodyParams,
-          model: modelName
-        })
-      });
-
-      if (!response.ok) {
-        let errMsg = `Groq API error (${response.status})`;
-        try {
-          const errData = await response.json();
-          if (errData?.error?.message) {
-            errMsg = errData.error.message;
-          }
-        } catch {
-          // ignore json parse
-        }
-
-        // If the model does not exist or user doesn't have access, try next model
-        if (
-          response.status === 404 ||
-          errMsg.toLowerCase().includes("does not exist") ||
-          errMsg.toLowerCase().includes("access to it")
-        ) {
-          console.warn(`Model ${modelName} unavailable, trying fallback...`);
-          lastError = new Error(errMsg);
-          continue;
-        }
-
-        if (response.status === 401) {
-          throw new Error("Invalid Groq API key. Please check your .env configuration.");
-        } else if (response.status === 429) {
-          throw new Error("Groq rate limit exceeded. Please wait a few seconds and try again.");
-        }
-
-        throw new Error(errMsg);
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (err) {
-      lastError = err;
-      if (
-        err.message?.includes("Invalid Groq API key") ||
-        err.message?.includes("rate limit exceeded")
-      ) {
-        throw err;
-      }
-    }
-  }
-
-  throw lastError || new Error("Failed to communicate with Groq AI service.");
-}
-
-/**
- * Generates a structured lesson from Groq
+ * Generates a structured lesson via secure backend serverless endpoint
  */
 export async function generateLesson({
   categoryTitle,
@@ -185,12 +108,7 @@ export async function generateLesson({
   cacheKey,
   bypassCache = false
 }) {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error(
-      "AI assistant is not configured yet. Please add your Groq API key (VITE_GROQ_API_KEY or AI_API_KEY) to your .env file."
-    );
-  }
+  const fallbackKey = getApiKey();
 
   // Check in-memory session cache
   if (cacheKey && !bypassCache && lessonCache.has(cacheKey)) {
@@ -205,14 +123,17 @@ export async function generateLesson({
     allSubtopics
   });
 
-  const data = await executeGroqChat(apiKey, {
-    messages: [
-      { role: "system", content: LEARNING_SYSTEM_PROMPT },
-      { role: "user", content: userPrompt }
-    ],
-    temperature: 0.3,
-    response_format: { type: "json_object" }
-  });
+  const data = await executeChatCompletion(
+    {
+      messages: [
+        { role: "system", content: LEARNING_SYSTEM_PROMPT },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.3,
+      response_format: { type: "json_object" }
+    },
+    fallbackKey
+  );
 
   const rawContent = data.choices?.[0]?.message?.content;
   if (!rawContent) {
@@ -231,20 +152,14 @@ export async function generateLesson({
 }
 
 /**
- * Sends a follow-up question for the open assistant session
+ * Sends a follow-up question via secure backend serverless endpoint
  */
 export async function sendFollowUp({
   topicTitle,
   conversationHistory = [],
   userQuestion
 }) {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error(
-      "AI assistant is not configured yet. Add your Groq API key to your .env file."
-    );
-  }
-
+  const fallbackKey = getApiKey();
   const systemPrompt = buildFollowUpSystemPrompt(topicTitle);
 
   const messages = [
@@ -256,10 +171,13 @@ export async function sendFollowUp({
     { role: "user", content: userQuestion }
   ];
 
-  const data = await executeGroqChat(apiKey, {
-    messages,
-    temperature: 0.5
-  });
+  const data = await executeChatCompletion(
+    {
+      messages,
+      temperature: 0.5
+    },
+    fallbackKey
+  );
 
   const answer = data.choices?.[0]?.message?.content;
   if (!answer) {
@@ -268,3 +186,4 @@ export async function sendFollowUp({
 
   return answer;
 }
+

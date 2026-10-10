@@ -4,17 +4,9 @@ import {
   buildGenerateMorePrompt
 } from "../ai/questionPrompt";
 import { generateQuestionSlug } from "../utils/questionStorage";
+import { executeChatCompletion } from "./groqClient";
 
-const GROQ_MODEL = import.meta.env.VITE_GROQ_MODEL || "openai/gpt-oss-120b";
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-
-const MODEL_FALLBACKS = [
-  GROQ_MODEL,
-  "openai/gpt-oss-120b",
-  "openai/gpt-oss-20b",
-  "qwen/qwen3.8-27b",
-  "llama-3.3-70b-versatile"
-];
+export const GROQ_MODEL = import.meta.env.VITE_GROQ_MODEL || "openai/gpt-oss-120b";
 
 function getApiKey() {
   return (
@@ -103,73 +95,7 @@ export function normalizeQuestionsResponse(parsed, defaultSlug = "q", startIdx =
 }
 
 /**
- * Executes chat completion with Groq with model fallbacks.
- */
-async function executeGroqRequest(apiKey, bodyParams) {
-  const modelsToTry = Array.from(new Set(MODEL_FALLBACKS));
-  let lastError = null;
-
-  for (const modelName of modelsToTry) {
-    try {
-      const response = await fetch(GROQ_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          ...bodyParams,
-          model: modelName
-        })
-      });
-
-      if (!response.ok) {
-        let errMsg = `Groq API error (${response.status})`;
-        try {
-          const errData = await response.json();
-          if (errData?.error?.message) {
-            errMsg = errData.error.message;
-          }
-        } catch {
-          // ignore
-        }
-
-        if (
-          response.status === 404 ||
-          errMsg.toLowerCase().includes("does not exist") ||
-          errMsg.toLowerCase().includes("access to it")
-        ) {
-          console.warn(`Model ${modelName} unavailable for questions, trying fallback...`);
-          lastError = new Error(errMsg);
-          continue;
-        }
-
-        if (response.status === 401) {
-          throw new Error("Invalid Groq API key. Please check your .env configuration.");
-        } else if (response.status === 429) {
-          throw new Error("Groq rate limit exceeded. Please wait a few seconds and try again.");
-        }
-
-        throw new Error(errMsg);
-      }
-
-      return await response.json();
-    } catch (err) {
-      lastError = err;
-      if (
-        err.message?.includes("Invalid Groq API key") ||
-        err.message?.includes("rate limit exceeded")
-      ) {
-        throw err;
-      }
-    }
-  }
-
-  throw lastError || new Error("Failed to communicate with Groq AI service.");
-}
-
-/**
- * Generates the initial question set for a subtopic or topic.
+ * Generates the initial question set for a subtopic or topic via secure backend.
  */
 export async function generateInitialQuestions({
   topicName,
@@ -180,13 +106,7 @@ export async function generateInitialQuestions({
   revisionNotes,
   isSmallTopic = false
 }) {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error(
-      "AI assistant is not configured yet. Please add your Groq API key (VITE_GROQ_API_KEY) to your .env file."
-    );
-  }
-
+  const fallbackKey = getApiKey();
   const slug = topicSlug || generateQuestionSlug(topicName);
   const userPrompt = buildQuestionPrompt({
     topicSlug: slug,
@@ -198,14 +118,17 @@ export async function generateInitialQuestions({
     isSmallTopic
   });
 
-  const data = await executeGroqRequest(apiKey, {
-    messages: [
-      { role: "system", content: QUESTION_SYSTEM_PROMPT },
-      { role: "user", content: userPrompt }
-    ],
-    temperature: 0.3,
-    response_format: { type: "json_object" }
-  });
+  const data = await executeChatCompletion(
+    {
+      messages: [
+        { role: "system", content: QUESTION_SYSTEM_PROMPT },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.3,
+      response_format: { type: "json_object" }
+    },
+    fallbackKey
+  );
 
   const rawContent = data.choices?.[0]?.message?.content;
   if (!rawContent) {
@@ -229,13 +152,7 @@ export async function generateMoreQuestions({
   existingQuestions = [],
   startIndex = 1
 }) {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error(
-      "AI assistant is not configured yet. Please add your Groq API key (VITE_GROQ_API_KEY) to your .env file."
-    );
-  }
-
+  const fallbackKey = getApiKey();
   const slug = topicSlug || generateQuestionSlug(topicName);
   const userPrompt = buildGenerateMorePrompt({
     topicSlug: slug,
@@ -248,14 +165,17 @@ export async function generateMoreQuestions({
     startIndex
   });
 
-  const data = await executeGroqRequest(apiKey, {
-    messages: [
-      { role: "system", content: QUESTION_SYSTEM_PROMPT },
-      { role: "user", content: userPrompt }
-    ],
-    temperature: 0.35,
-    response_format: { type: "json_object" }
-  });
+  const data = await executeChatCompletion(
+    {
+      messages: [
+        { role: "system", content: QUESTION_SYSTEM_PROMPT },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.35,
+      response_format: { type: "json_object" }
+    },
+    fallbackKey
+  );
 
   const rawContent = data.choices?.[0]?.message?.content;
   if (!rawContent) {

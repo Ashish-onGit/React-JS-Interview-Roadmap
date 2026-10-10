@@ -64,7 +64,7 @@ export default function ThemeToggle({ className = "", variant = "header" }) {
       onClick={toggleTheme}
       aria-label={title}
       title={title}
-      className={`p-2 rounded-xl border transition-colors flex items-center justify-center shrink-0 cursor-pointer ${
+      className={`h-9 w-9 p-0 rounded-xl border transition-colors inline-flex items-center justify-center shrink-0 cursor-pointer ${
         isDark
           ? "bg-[#1a1a1a] hover:bg-[#242424] text-amber-400 border-[#2e2e2e] shadow-xs"
           : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/80 shadow-2xs"

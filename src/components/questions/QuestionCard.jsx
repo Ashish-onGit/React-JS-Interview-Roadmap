@@ -6,9 +6,11 @@ import {
   FiCheck,
   FiCopy,
   FiCode,
-  FiTarget
+  FiTarget,
+  FiMic
 } from "react-icons/fi";
 import { accordionVariants } from "../../utils/motionVariants";
+import AnswerEvaluation from "./AnswerEvaluation";
 
 /**
  * Extracts any embedded markdown code block from the question string
@@ -38,7 +40,9 @@ function QuestionCard({
   item,
   index,
   isCompleted,
-  onToggleComplete
+  onToggleComplete,
+  topicName = "",
+  roadmapPath = ""
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
@@ -98,7 +102,7 @@ function QuestionCard({
         MOBILE-FIRST HIERARCHY:
         Row 1: 01   BASIC   CONCEPTUAL                          ˅
         Row 2: Question text (100% full card width, 15px-16px, readable)
-        Row 3: Completion action button (min 40px touch target)
+        Row 3: Completion action button + Answer with Voice button
       */}
       <div className="w-full p-3.5 sm:p-4 flex flex-col gap-2.5">
         {/* Accordion Trigger (Row 1: Metadata + Chevron, Row 2: Full Width Question) */}
@@ -162,7 +166,7 @@ function QuestionCard({
           </h3>
         </button>
 
-        {/* ROW 3: Compact Status / Completion Control (Min 40px touch target, icon only) */}
+        {/* ROW 3: Status / Completion Control + Answer with Voice Button */}
         <div className="flex items-center justify-between pt-0.5">
           <button
             type="button"
@@ -193,6 +197,20 @@ function QuestionCard({
               ) : null}
             </div>
           </button>
+
+          {/* Visually appealing "Answer with Voice" button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(true);
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 active:scale-[0.98] text-emerald-700 dark:text-emerald-400 border border-emerald-500/25 text-xs font-semibold transition-all cursor-pointer shadow-2xs"
+            title="Answer this question verbally using AI evaluation"
+          >
+            <FiMic className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span>Answer with Voice</span>
+          </button>
         </div>
       </div>
 
@@ -207,7 +225,7 @@ function QuestionCard({
             exit="exit"
             className="overflow-hidden"
           >
-            <div className="px-4 sm:px-5 pb-4 pt-3 border-t border-slate-100 dark:border-[#242424] bg-slate-50/40 dark:bg-[#121212] space-y-3.5">
+            <div className="px-4 sm:px-5 pb-4 pt-3 border-t border-slate-100 dark:border-[#242424] bg-slate-50/40 dark:bg-[#121212] space-y-4">
               {/* Optional Code Snippet Block */}
               {code && (
                 <div className="rounded-xl overflow-hidden border border-slate-200/90 dark:border-[#2a2a2a] bg-slate-900 text-slate-100 dark:bg-[#0c0c0c] text-xs sm:text-sm">
@@ -240,11 +258,18 @@ function QuestionCard({
                 </div>
               )}
 
+              {/* AI Answer Evaluation Section */}
+              <AnswerEvaluation
+                questionItem={item}
+                topicName={topicName}
+                roadmapPath={roadmapPath}
+              />
+
               {/* Model Answer (Clear separation, comfortable line height 1.6) */}
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 pt-1">
                 <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
                   <FiTarget className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span>Interview Answer</span>
+                  <span>Reference Answer</span>
                 </div>
                 <div className="text-[14px] sm:text-[15px] text-slate-700 dark:text-[#d4d4d4] leading-[1.6] whitespace-pre-line font-normal">
                   {item.answer}
@@ -272,3 +297,4 @@ function QuestionCard({
 }
 
 export default React.memo(QuestionCard);
+
