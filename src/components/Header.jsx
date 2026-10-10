@@ -13,21 +13,21 @@ export default function Header({
 }) {
   const location = useLocation();
   const { overallStats } = useProgress();
-  const isAiInterviewActive = location.pathname.startsWith("/ai-interview");
+  const isAiInterviewActive = isAiInterview || location.pathname.startsWith("/ai-interview");
 
   return (
-    <header className="bg-white dark:bg-[#111111] text-slate-800 dark:text-[#f5f5f5] border-b border-slate-200 dark:border-[#2a2a2a] sticky top-0 z-30 h-16 md:h-[72px] shadow-xs transition-colors duration-150">
-      <div className="max-w-[1600px] mx-auto px-3.5 sm:px-6 h-full flex items-center justify-between gap-3 sm:gap-4">
+    <header className="bg-white dark:bg-[#111111] text-slate-800 dark:text-[#f5f5f5] border-b border-slate-200 dark:border-[#2a2a2a] sticky top-0 z-30 h-14 sm:h-16 md:h-[72px] shadow-xs transition-colors duration-150">
+      <div className="max-w-[1600px] mx-auto px-2.5 sm:px-6 h-full flex items-center justify-between gap-1.5 sm:gap-4">
         
         {/* Left: Branding & Sidebar Controls */}
-        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-shrink-0">
+        <div className="flex items-center gap-1 sm:gap-3 min-w-0 flex-1 sm:flex-initial">
           {/* Mobile hamburger menu toggle (hidden on AI Interview page) */}
           {!isAiInterviewActive && (
             <button
               type="button"
               onClick={onOpenMobileMenu}
               aria-label="Open navigation menu"
-              className="md:hidden p-1.5 text-slate-600 dark:text-[#a3a3a3] hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-[#222222] transition-colors flex-shrink-0"
+              className="md:hidden p-1.5 -ml-1 text-slate-600 dark:text-[#a3a3a3] hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-[#222222] transition-colors flex-shrink-0 cursor-pointer"
             >
               <FiMenu className="w-5 h-5" />
             </button>
@@ -40,7 +40,7 @@ export default function Header({
               onClick={onToggleDesktopSidebar}
               aria-label={isDesktopSidebarOpen ? "Hide sidebar (Ctrl+B)" : "Show sidebar (Ctrl+B)"}
               title={isDesktopSidebarOpen ? "Hide sidebar (Ctrl+B)" : "Show sidebar (Ctrl+B)"}
-              className={`hidden md:flex items-center justify-center p-2 rounded-lg transition-colors flex-shrink-0 ${
+              className={`hidden md:flex items-center justify-center p-2 rounded-lg transition-colors flex-shrink-0 cursor-pointer ${
                 isDesktopSidebarOpen
                   ? "text-slate-500 dark:text-[#a3a3a3] hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#222222]"
                   : "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-[#1f1f1f] hover:bg-indigo-100 dark:hover:bg-[#262626] border border-indigo-200 dark:border-[#333333]"
@@ -53,19 +53,20 @@ export default function Header({
           {/* Application icon & branding */}
           <Link
             to="/"
-            className="flex items-center space-x-2.5 sm:space-x-3 min-w-0 group cursor-pointer"
+            className="flex items-center gap-2 sm:gap-3 min-w-0 group cursor-pointer"
             title="Go to Roadmap Overview"
           >
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-xs flex-shrink-0 group-hover:scale-105 transition-transform">
-              <FiCode className="w-5 h-5 md:w-6 md:h-6 stroke-[2.5]" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+              <FiCode className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 stroke-[2.5]" />
             </div>
 
             <div className="min-w-0">
-              <h1 className="text-base sm:text-lg md:text-xl font-bold tracking-tight text-slate-900 dark:text-[#f5f5f5] leading-tight truncate">
-                <span className="hidden sm:inline">React + JavaScript Interview Preparation</span>
-                <span className="sm:hidden">React + JS Interview</span>
+              <h1 className="text-sm sm:text-base md:text-xl font-bold tracking-tight text-slate-900 dark:text-[#f5f5f5] leading-tight truncate">
+                <span className="hidden lg:inline">React + JavaScript Interview Preparation</span>
+                <span className="hidden sm:inline lg:hidden">React + JS Interview</span>
+                <span className="sm:hidden">React + JS</span>
               </h1>
-              <p className="text-[11px] sm:text-xs text-slate-500 dark:text-[#a3a3a3] font-normal leading-tight mt-0.5 truncate">
+              <p className="hidden sm:block text-[11px] sm:text-xs text-slate-500 dark:text-[#a3a3a3] font-normal leading-tight mt-0.5 truncate">
                 Learn • Revise • Track • Crack It 🚀
               </p>
             </div>
@@ -96,21 +97,23 @@ export default function Header({
         )}
 
         {/* Right: AI Interview Button, Roadmap link, Progress Pill & Theme Toggle */}
-        <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
           {/* Back to Roadmap button if on AI interview page */}
           {isAiInterviewActive && (
             <Link
               to="/"
-              className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-[#a3a3a3] hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-[#191919] border border-slate-200/90 dark:border-[#303030] hover:bg-slate-100 dark:hover:bg-[#222222] transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1 sm:gap-1.5 h-8 sm:h-9 px-2 sm:px-3.5 rounded-lg sm:rounded-xl text-xs font-semibold text-slate-600 dark:text-[#a3a3a3] hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-[#191919] border border-slate-200/90 dark:border-[#303030] hover:bg-slate-100 dark:hover:bg-[#222222] transition-colors shadow-2xs"
+              title="Back to Roadmap"
             >
-              <span>← Roadmap</span>
+              <span>←</span>
+              <span className="hidden sm:inline">Roadmap</span>
             </Link>
           )}
 
           {/* Dedicated AI Interview Navigation Button */}
           <Link
             to="/ai-interview"
-            className={`inline-flex items-center gap-2 h-9 px-3 sm:px-3.5 rounded-xl text-xs font-semibold transition-all shadow-2xs border ${
+            className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 h-8 sm:h-9 px-2 sm:px-3.5 rounded-lg sm:rounded-xl text-xs font-semibold transition-all shadow-2xs border ${
               isAiInterviewActive
                 ? "bg-indigo-600 text-white border-indigo-600 shadow-indigo-600/20"
                 : "bg-slate-50 dark:bg-[#191919] text-slate-700 dark:text-[#d4d4d4] border-slate-200/90 dark:border-[#303030] hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-[#222222]"
@@ -118,24 +121,30 @@ export default function Header({
             title="Practice realistic technical interviews with AI"
             aria-label="AI Interview Simulator"
           >
-            <FiCpu className="w-4 h-4 flex-shrink-0" />
-            <span className="hidden sm:inline">AI Interview</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <FiCpu className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+            <span className="hidden md:inline">AI Interview</span>
+            <span className="hidden sm:inline md:hidden">AI</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
           </Link>
 
           {/* Roadmap Progress Pill (Only on Roadmap) */}
           {!isAiInterviewActive && (
-            <div className="inline-flex items-center gap-2 h-9 bg-slate-50 dark:bg-[#191919] border border-slate-200/80 dark:border-[#303030] px-3 rounded-xl text-xs font-medium text-slate-700 dark:text-[#d4d4d4] shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block flex-shrink-0" />
-              <span className="font-bold text-slate-900 dark:text-[#f5f5f5] leading-none">{overallStats.percentage}%</span>
-              <span className="hidden sm:inline text-slate-400 dark:text-[#737373] text-[11px] leading-none">
+            <div
+              className="inline-flex items-center gap-1.5 sm:gap-2 h-8 sm:h-9 bg-slate-50 dark:bg-[#191919] border border-slate-200/80 dark:border-[#303030] px-2 sm:px-3 rounded-lg sm:rounded-xl text-xs font-medium text-slate-700 dark:text-[#d4d4d4] shadow-2xs"
+              title={`Overall Progress: ${overallStats.completed} of ${overallStats.total} subtopics completed (${overallStats.percentage}%)`}
+            >
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 inline-block flex-shrink-0" />
+              <span className="font-bold text-slate-900 dark:text-[#f5f5f5] text-xs leading-none">
+                {overallStats.percentage}%
+              </span>
+              <span className="hidden md:inline text-slate-400 dark:text-[#737373] text-[11px] leading-none">
                 ({overallStats.completed}/{overallStats.total})
               </span>
             </div>
           )}
 
           {/* Theme Toggle */}
-          <ThemeToggle className="h-9 w-9" />
+          <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />
         </div>
 
       </div>

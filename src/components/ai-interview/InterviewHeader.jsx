@@ -11,9 +11,9 @@ export default function InterviewHeader({
   isAISpeaking = false,
 }) {
   return (
-    <div className="w-full bg-white dark:bg-[#141414] border-b border-slate-200 dark:border-[#262626] px-4 sm:px-6 py-3 flex items-center justify-between gap-3 transition-colors">
+    <div className="w-full bg-white dark:bg-[#141414] border-b border-slate-200 dark:border-[#262626] px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-3 transition-colors">
       {/* Left: Title & Status */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
           <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">

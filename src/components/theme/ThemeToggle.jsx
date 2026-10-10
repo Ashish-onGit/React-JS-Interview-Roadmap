@@ -64,7 +64,7 @@ export default function ThemeToggle({ className = "", variant = "header" }) {
       onClick={toggleTheme}
       aria-label={title}
       title={title}
-      className={`h-9 w-9 p-0 rounded-xl border transition-colors inline-flex items-center justify-center shrink-0 cursor-pointer ${
+      className={`h-8 w-8 sm:h-9 sm:w-9 p-0 rounded-lg sm:rounded-xl border transition-colors inline-flex items-center justify-center shrink-0 cursor-pointer ${
         isDark
           ? "bg-[#1a1a1a] hover:bg-[#242424] text-amber-400 border-[#2e2e2e] shadow-xs"
           : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/80 shadow-2xs"
@@ -80,18 +80,18 @@ export default function ThemeToggle({ className = "", variant = "header" }) {
             transition={{ duration: 0.16, ease: "easeOut" }}
             className="inline-flex items-center justify-center"
           >
-            <FiSun className="w-4 h-4" />
+            <FiSun className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </motion.span>
         ) : (
           <motion.span
             key="moon"
             initial={{ opacity: 0, rotate: 30, scale: 0.8 }}
             animate={{ opacity: 1, rotate: 0, scale: 1 }}
-            exit={{ opacity: 0, rotate: -30, scale: 0.8 }}
+            exit={{ opacity: 0, rotate: 30, scale: 0.8 }}
             transition={{ duration: 0.16, ease: "easeOut" }}
             className="inline-flex items-center justify-center"
           >
-            <FiMoon className="w-4 h-4" />
+            <FiMoon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </motion.span>
         )}
       </AnimatePresence>
