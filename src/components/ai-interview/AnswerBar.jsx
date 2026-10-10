@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   FiMic,
   FiSquare,
@@ -8,7 +8,6 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import CodeEditor, { DEFAULT_REACT_CODE } from "./CodeEditor";
 
 export default function AnswerBar({
   isRecording,
@@ -26,7 +25,8 @@ export default function AnswerBar({
   codeSnippet = "",
 }) {
   const [typedAnswer, setTypedAnswer] = useState("");
-  const [isTypingMode, setIsTypingMode] = useState(false);
+  const [isTypingMode, setIsTypingMode] = useState(true);
+  const textareaRef = useRef(null);
 
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
@@ -36,7 +36,7 @@ export default function AnswerBar({
       onStopRecording();
     }
 
-    const finalAnswer = isTypingMode ? typedAnswer.trim() : (transcript || typedAnswer).trim();
+    const finalAnswer = typedAnswer.trim() || (transcript || "").trim();
     const finalCode = isCodeEditorOpen && codeSnippet.trim() ? codeSnippet.trim() : null;
     if (!finalAnswer && !finalCode) return;
 
@@ -47,7 +47,6 @@ export default function AnswerBar({
     });
 
     setTypedAnswer("");
-    setIsTypingMode(false);
   };
 
   const handleQuickAction = (intent, promptText) => {
@@ -65,57 +64,64 @@ export default function AnswerBar({
     if (isRecording) onStopRecording();
     setTypedAnswer(transcript || "");
     setIsTypingMode(true);
+    setTimeout(() => textareaRef.current?.focus(), 50);
   };
 
   return (
-    <div className="sticky bottom-0 z-20 w-full bg-white/95 dark:bg-[#141414]/95 backdrop-blur-md border-t border-slate-200 dark:border-[#262626] p-3 sm:p-4 shadow-lg transition-colors max-h-[75vh] overflow-y-auto">
-      <div className="max-w-4xl mx-auto space-y-2.5">
-        {/* Quick Action Chips Row */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
-          <span className="text-[11px] font-medium text-slate-400 dark:text-[#737373] flex-shrink-0 mr-1 hidden sm:inline">
-            Quick Actions:
+    <div className="sticky bottom-0 z-20 w-full p-2.5 sm:p-4 bg-transparent pointer-events-none">
+      {/* Floating Cockpit Card Container matching application's charcoal/emerald theme */}
+      <div className="max-w-5xl mx-auto pointer-events-auto rounded-2xl bg-white/95 dark:bg-[#161616]/95 border border-slate-200/90 dark:border-[#272727] shadow-xl shadow-black/10 dark:shadow-black/50 backdrop-blur-xl p-3 sm:p-4 space-y-3 transition-colors">
+        {/* Row 1: Quick Actions Chips */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar text-xs">
+          <span className="text-xs font-medium text-slate-500 dark:text-[#888888] flex-shrink-0 mr-1 select-none">
+            Quick actions:
           </span>
+
           <button
             type="button"
             disabled={isEvaluating}
             onClick={() => handleQuickAction("HINT_REQUEST", "Can you give me a hint for this question?")}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/20 text-[11px] font-medium transition-colors disabled:opacity-50 cursor-pointer flex-shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/25 text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer flex-shrink-0"
           >
             <span>💡</span>
             <span>Ask for Hint</span>
           </button>
+
           <button
             type="button"
             disabled={isEvaluating}
             onClick={() => handleQuickAction("CLARIFICATION_REQUEST", "Could you clarify what you mean by this question?")}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-500/20 text-[11px] font-medium transition-colors disabled:opacity-50 cursor-pointer flex-shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-500/25 text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer flex-shrink-0"
           >
             <span>❓</span>
             <span>Clarify</span>
           </button>
+
           <button
             type="button"
             disabled={isEvaluating}
             onClick={() => handleQuickAction("EXAMPLE_REQUEST", "Could you give a small practical example to help illustrate this?")}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-medium transition-colors disabled:opacity-50 cursor-pointer flex-shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25 text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer flex-shrink-0"
           >
             <span>📝</span>
             <span>Give Example</span>
           </button>
+
           <button
             type="button"
             disabled={isEvaluating}
             onClick={() => handleQuickAction("REPEAT_REQUEST", "Could you please repeat the question?")}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-700 dark:text-sky-400 border border-sky-500/20 text-[11px] font-medium transition-colors disabled:opacity-50 cursor-pointer flex-shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-700 dark:text-sky-400 border border-sky-500/25 text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer flex-shrink-0"
           >
             <span>🔄</span>
             <span>Repeat Question</span>
           </button>
+
           <button
             type="button"
             disabled={isEvaluating}
             onClick={() => handleQuickAction("SKIP_REQUEST", "I would like to skip this question and move to the next topic.")}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#202020] hover:bg-slate-200 dark:hover:bg-[#2a2a2a] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#333333] text-[11px] font-medium transition-colors disabled:opacity-50 cursor-pointer flex-shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-[#202020] hover:bg-slate-200 dark:hover:bg-[#282828] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#2f2f2f] text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer flex-shrink-0"
           >
             <span>⏩</span>
             <span>Skip</span>
@@ -124,7 +130,7 @@ export default function AnswerBar({
 
         {/* API Error Banner with Retry */}
         {apiError && (
-          <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-700 dark:text-red-400">
+          <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-600 dark:text-red-400">
             <div className="flex items-center gap-2">
               <FiAlertCircle className="w-4 h-4 flex-shrink-0 text-red-500" />
               <span>{apiError}</span>
@@ -141,15 +147,18 @@ export default function AnswerBar({
           </div>
         )}
 
-        {/* Error notification banner if microphone or speech fails */}
+        {/* Speech Error notification */}
         {speechError && (
           <div className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-400">
             <FiAlertCircle className="w-4 h-4 flex-shrink-0" />
             <span className="flex-1">{speechError}</span>
             <button
               type="button"
-              onClick={() => setIsTypingMode(true)}
-              className="font-medium underline hover:text-amber-900 dark:hover:text-amber-200 cursor-pointer"
+              onClick={() => {
+                setIsTypingMode(true);
+                setTimeout(() => textareaRef.current?.focus(), 50);
+              }}
+              className="font-medium underline hover:text-amber-800 dark:hover:text-amber-200 cursor-pointer"
             >
               Switch to typing
             </button>
@@ -159,11 +168,11 @@ export default function AnswerBar({
         {/* Evaluating State Banner */}
         {isEvaluating && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/40 text-sm text-indigo-700 dark:text-indigo-300 font-medium"
+            className="flex items-center justify-center gap-3 py-2 px-4 rounded-xl bg-emerald-500/10 dark:bg-emerald-950/30 border border-emerald-500/20 text-xs text-emerald-700 dark:text-emerald-400 font-medium"
           >
-            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
             <span>AI is listening and formulating the next interviewer response...</span>
           </motion.div>
         )}
@@ -175,7 +184,7 @@ export default function AnswerBar({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="p-3.5 rounded-xl bg-emerald-500/5 dark:bg-emerald-950/20 border border-emerald-500/30 space-y-2.5"
+              className="p-3 rounded-xl bg-emerald-500/5 dark:bg-emerald-950/20 border border-emerald-500/30 space-y-2 overflow-hidden"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
@@ -191,7 +200,7 @@ export default function AnswerBar({
                   </span>
                 </div>
 
-                {/* Calm Acoustic Wave Visualizer */}
+                {/* Acoustic Wave Visualizer */}
                 <div className="flex items-center gap-1 h-5 px-2">
                   {[0.3, 0.6, 0.9, 1.0, 0.9, 0.6, 0.3].map((scale, i) => (
                     <motion.span
@@ -214,9 +223,9 @@ export default function AnswerBar({
               </div>
 
               {/* Real-time transcribed text preview */}
-              <div className="p-2.5 rounded-lg bg-white/80 dark:bg-[#181818] border border-slate-200/80 dark:border-[#2a2a2a] min-h-[48px] max-h-24 overflow-y-auto text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-normal">
+              <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-[#1a1a1a] border border-slate-200 dark:border-[#2b2b2b] text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-normal min-h-[38px] max-h-20 overflow-y-auto">
                 {transcript || (
-                  <span className="text-slate-400 italic">
+                  <span className="text-slate-400 dark:text-slate-500 italic">
                     Start speaking now. Your voice will appear here in real time...
                   </span>
                 )}
@@ -225,96 +234,107 @@ export default function AnswerBar({
           )}
         </AnimatePresence>
 
-        {/* Optional Manual Typing Mode */}
-        {isTypingMode && (
-          <div className="space-y-2">
-            <textarea
-              value={typedAnswer}
-              onChange={(e) => setTypedAnswer(e.target.value)}
-              disabled={isEvaluating}
-              placeholder="Type your explanation or response here..."
-              rows={3}
-              className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-50 dark:bg-[#181818] border border-slate-200 dark:border-[#2c2c2c] text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all resize-none"
-            />
-          </div>
-        )}
+        {/* Horizontal Divider Line */}
+        <div className="border-t border-slate-200/80 dark:border-[#242424]" />
 
-        {/* Main Answer Actions Row */}
-        <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
-          {/* Secondary Controls: Code & Typing Toggles */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Row 2: Segmented Pill (Type Answer / Code Editor) + Center Input Field + Right Answer Button */}
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+          {/* Left Segmented Control */}
+          <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#282828] flex-shrink-0">
             <button
               type="button"
-              onClick={() => setIsTypingMode(!isTypingMode)}
-              disabled={isEvaluating || isRecording}
-              className={`p-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors border ${
+              onClick={() => {
+                setIsTypingMode(true);
+                setTimeout(() => textareaRef.current?.focus(), 50);
+              }}
+              disabled={isEvaluating}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
                 isTypingMode
-                  ? "bg-slate-100 dark:bg-[#252525] border-slate-300 dark:border-[#383838] text-slate-900 dark:white"
-                  : "bg-transparent border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#202020]"
+                  ? "bg-white dark:bg-[#282828] text-slate-900 dark:text-white font-semibold shadow-xs border border-slate-200/70 dark:border-[#383838]"
+                  : "text-slate-500 dark:text-[#888888] hover:text-slate-800 dark:hover:text-slate-200"
               }`}
-              title={isTypingMode ? "Close manual typing" : "Type answer with keyboard"}
             >
-              <FiEdit3 className="w-4 h-4" />
-              <span className="hidden sm:inline">
-                {isTypingMode ? "Typing Mode" : "Type Answer"}
-              </span>
+              <FiEdit3 className={`w-3.5 h-3.5 ${isTypingMode ? "text-emerald-600 dark:text-emerald-400" : ""}`} />
+              <span>Type Answer</span>
             </button>
 
             <button
               type="button"
               onClick={onToggleCodeEditor}
-              disabled={isEvaluating || isRecording}
-              className={`p-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors border ${
+              disabled={isEvaluating}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
                 isCodeEditorOpen
-                  ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-600 dark:text-emerald-400 font-semibold shadow-2xs"
-                  : "bg-transparent border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#202020]"
+                  ? "bg-white dark:bg-[#282828] text-slate-900 dark:text-white font-semibold shadow-xs border border-slate-200/70 dark:border-[#383838]"
+                  : "text-slate-500 dark:text-[#888888] hover:text-slate-800 dark:hover:text-slate-200"
               }`}
-              title={isCodeEditorOpen ? "Close right-side code editor" : "Open right-side code editor"}
             >
-              <FiCode className="w-4 h-4" />
-              <span className="hidden sm:inline">
-                {isCodeEditorOpen ? "Code Editor (Open)" : "Code Editor"}
-              </span>
+              <FiCode className={`w-3.5 h-3.5 ${isCodeEditorOpen ? "text-emerald-600 dark:text-emerald-400" : ""}`} />
+              <span>Code Editor</span>
+              {isCodeEditorOpen && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-0.5" />
+              )}
             </button>
           </div>
 
-          {/* Primary Action Button (Voice Record / Stop / Submit) */}
-          <div className="flex items-center gap-2 ml-auto">
+          {/* Middle: Integrated Input Box with Helper Text */}
+          <div className="flex-1 min-w-[240px] relative rounded-xl bg-slate-50 dark:bg-[#1a1a1a] border border-slate-200 dark:border-[#2b2b2b] focus-within:border-emerald-500/60 dark:focus-within:border-emerald-500/50 focus-within:ring-1 focus-within:ring-emerald-500/20 px-3.5 py-1.5 transition-all flex flex-col justify-center">
+            <textarea
+              ref={textareaRef}
+              value={typedAnswer}
+              onChange={(e) => setTypedAnswer(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
+              disabled={isEvaluating}
+              placeholder="Type your answer here..."
+              rows={1}
+              style={{ outline: "none", border: "none", boxShadow: "none" }}
+              className="w-full bg-transparent text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 border-0 border-none outline-none focus:outline-none focus:ring-0 focus:border-0 resize-none leading-relaxed overflow-y-auto max-h-20 p-0 m-0 shadow-none ring-0"
+            />
+            <div className="text-[10px] text-slate-400 dark:text-[#737373] font-mono mt-0.5 select-none">
+              Press Enter to submit • Shift + Enter for new line
+            </div>
+          </div>
+
+          {/* Right: Primary Action Button (Answer / Stop / Submit in signature Emerald) */}
+          <div className="flex items-center gap-2 flex-shrink-0">
             {isRecording ? (
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={handleReviewVoiceTranscript}
-                  className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-[#252525] dark:hover:bg-[#303030] border border-slate-200 dark:border-[#383838] transition-colors cursor-pointer"
-                  title="Pause speech and edit transcript before submitting"
+                  className="px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-[#252525] hover:bg-slate-200 dark:hover:bg-[#303030] border border-slate-200 dark:border-[#383838] transition-colors cursor-pointer"
                 >
-                  Edit Transcript
+                  Edit
                 </button>
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-red-600 hover:bg-red-700 active:bg-red-800 shadow-md flex items-center gap-2 transition-all cursor-pointer"
+                  className="px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-red-600 hover:bg-red-700 active:bg-red-800 shadow-sm flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap"
                 >
-                  <FiSquare className="w-4 h-4 fill-current" />
-                  <span>Stop & Submit Answer</span>
+                  <FiSquare className="w-3.5 h-3.5 fill-current" />
+                  <span>Stop & Submit</span>
                 </button>
               </div>
-            ) : isTypingMode ? (
+            ) : typedAnswer.trim() ? (
               <button
                 type="button"
                 onClick={handleSubmit}
-                disabled={isEvaluating || (!typedAnswer.trim() && !(isCodeEditorOpen && codeSnippet.trim()))}
-                className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md flex items-center gap-2 transition-all cursor-pointer"
+                disabled={isEvaluating}
+                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 shadow-sm shadow-emerald-600/25 flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap"
               >
-                <FiSend className="w-4 h-4" />
-                <span>Submit Answer</span>
+                <FiSend className="w-3.5 h-3.5" />
+                <span>Submit</span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={onStartRecording}
                 disabled={isEvaluating}
-                className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed shadow-md flex items-center gap-2.5 transition-all cursor-pointer"
+                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 shadow-sm shadow-emerald-600/25 flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap"
               >
                 <FiMic className="w-4 h-4 stroke-[2.5]" />
                 <span>Answer</span>

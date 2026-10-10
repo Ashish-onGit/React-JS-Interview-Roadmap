@@ -35,12 +35,16 @@ export default function Component() {
   );
 }`;
 
+export const MIN_FLOATING_WIDTH = 680;
+export const MIN_FLOATING_HEIGHT = 360;
+export const MIN_DOCKED_WIDTH = 540;
+
 export default function CodeEditor({
   value = DEFAULT_REACT_CODE,
   onChange,
   disabled = false,
   placeholder = "// Write your React / JavaScript component code solution here...",
-  width = 520,
+  width = MIN_DOCKED_WIDTH,
   onWidthChange,
   onClose,
   onSubmit,
@@ -50,15 +54,19 @@ export default function CodeEditor({
   const [isFloating, setIsFloating] = useState(false);
   const [floatingPos, setFloatingPos] = useState(() => {
     const screenWidth = typeof window !== "undefined" ? window.innerWidth : 1200;
-    const initialWidth = 620;
+    const initialWidth = 660;
     return {
       x: Math.max(20, screenWidth - initialWidth - 30),
       y: 76,
     };
   });
-  const [floatingSize, setFloatingSize] = useState({
-    width: 620,
-    height: 520,
+  const [floatingSize, setFloatingSize] = useState(() => {
+    const screenWidth = typeof window !== "undefined" ? window.innerWidth : 1200;
+    const initialW = Math.min(660, Math.max(MIN_FLOATING_WIDTH, screenWidth - 40));
+    return {
+      width: initialW,
+      height: 520,
+    };
   });
   const [isDraggingWindow, setIsDraggingWindow] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -127,8 +135,9 @@ export default function CodeEditor({
       if (!isDraggingLeftRef.current) return;
       const deltaX = dragStartXRef.current - moveEvent.clientX;
       const screenWidth = window.innerWidth || 1200;
-      const maxAllowed = Math.max(380, screenWidth - 640);
-      const newWidth = Math.max(340, Math.min(maxAllowed, dragStartWidthRef.current + deltaX));
+      const minAllowed = Math.min(MIN_DOCKED_WIDTH, Math.max(340, screenWidth - 60));
+      const maxAllowed = Math.max(minAllowed, screenWidth - 320);
+      const newWidth = Math.max(minAllowed, Math.min(maxAllowed, dragStartWidthRef.current + deltaX));
       if (onWidthChange) {
         onWidthChange(newWidth);
       }
@@ -155,8 +164,9 @@ export default function CodeEditor({
       if (!isDraggingLeftRef.current || !moveEvent.touches[0]) return;
       const deltaX = dragStartXRef.current - moveEvent.touches[0].clientX;
       const screenWidth = window.innerWidth || 1200;
-      const maxAllowed = Math.max(300, screenWidth - 40);
-      const newWidth = Math.max(280, Math.min(maxAllowed, dragStartWidthRef.current + deltaX));
+      const minAllowed = Math.min(MIN_DOCKED_WIDTH, Math.max(300, screenWidth - 40));
+      const maxAllowed = Math.max(minAllowed, screenWidth - 40);
+      const newWidth = Math.max(minAllowed, Math.min(maxAllowed, dragStartWidthRef.current + deltaX));
       if (onWidthChange) {
         onWidthChange(newWidth);
       }
@@ -252,9 +262,9 @@ export default function CodeEditor({
       const deltaY = moveEvent.clientY - startY;
       const screenW = window.innerWidth || 1200;
       const screenH = window.innerHeight || 800;
-      const minW = 380;
+      const minW = Math.min(MIN_FLOATING_WIDTH, screenW - 20);
       const maxW = Math.max(minW, screenW - floatingPos.x - 20);
-      const minH = 280;
+      const minH = Math.min(MIN_FLOATING_HEIGHT, screenH - 20);
       const maxH = Math.max(minH, screenH - floatingPos.y - 20);
 
       setFloatingSize({
@@ -282,7 +292,7 @@ export default function CodeEditor({
     const handleMouseMove = (moveEvent) => {
       const deltaY = moveEvent.clientY - startY;
       const screenH = window.innerHeight || 800;
-      const minH = 280;
+      const minH = Math.min(MIN_FLOATING_HEIGHT, screenH - 20);
       const maxH = Math.max(minH, screenH - floatingPos.y - 20);
       setFloatingSize((prev) => ({
         ...prev,
@@ -309,7 +319,7 @@ export default function CodeEditor({
     const handleMouseMove = (moveEvent) => {
       const deltaX = moveEvent.clientX - startX;
       const screenW = window.innerWidth || 1200;
-      const minW = 380;
+      const minW = Math.min(MIN_FLOATING_WIDTH, screenW - 20);
       const maxW = Math.max(minW, screenW - floatingPos.x - 20);
       setFloatingSize((prev) => ({
         ...prev,
@@ -336,7 +346,8 @@ export default function CodeEditor({
 
     const handleMouseMove = (moveEvent) => {
       const deltaX = startX - moveEvent.clientX;
-      const minW = 380;
+      const screenW = window.innerWidth || 1200;
+      const minW = Math.min(MIN_FLOATING_WIDTH, screenW - 20);
       const newW = Math.max(minW, startW + deltaX);
       const newX = origX - (newW - startW);
       if (newX >= 10) {
@@ -600,11 +611,18 @@ export default function CodeEditor({
               position: "fixed",
               left: `${floatingPos.x}px`,
               top: `${floatingPos.y}px`,
-              width: `${floatingSize.width}px`,
-              height: `${floatingSize.height}px`,
+              width: `${Math.max(MIN_FLOATING_WIDTH, floatingSize.width)}px`,
+              height: `${Math.max(MIN_FLOATING_HEIGHT, floatingSize.height)}px`,
+              minWidth: "min(640px, calc(100vw - 20px))",
+              minHeight: `${MIN_FLOATING_HEIGHT}px`,
+              maxWidth: "calc(100vw - 20px)",
+              maxHeight: "calc(100vh - 20px)",
               zIndex: 9999,
             }
-          : { width: `${width}px` }
+          : {
+              width: `${Math.max(MIN_DOCKED_WIDTH, width)}px`,
+              minWidth: "min(540px, calc(100vw - 40px))",
+            }
       }
       className={
         isMaximized
@@ -678,90 +696,140 @@ export default function CodeEditor({
         >
           {/* Left: Window dots, Language Badge, Line counter & Floating Mode Indicator */}
           <div className="flex items-center gap-2 min-w-0 flex-shrink-0">
-            <div className="flex items-center gap-1.5 opacity-80">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 inline-block" />
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
+            {/* macOS Window Controls: Red (Close), Yellow (Minimize), Green (Maximize / Restore) */}
+            <div className="group/mac flex items-center gap-1.5 mr-1 select-none">
+              {/* Red Dot: Close */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onClose) onClose();
+                  else setIsCollapsed(true);
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                className="w-3 h-3 rounded-full bg-[#ff5f56] hover:bg-[#ff3b30] active:scale-90 flex items-center justify-center transition-all cursor-pointer shadow-xs border border-black/25 focus:outline-none"
+                title="Close code editor (Red)"
+                aria-label="Close code editor"
+              >
+                <FiX className="w-2 h-2 text-[#4c0000] opacity-0 group-hover/mac:opacity-100 transition-opacity stroke-[3]" />
+              </button>
+
+              {/* Yellow Dot: Minimize */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsCollapsed(true);
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                className="w-3 h-3 rounded-full bg-[#ffbd2e] hover:bg-[#ff9500] active:scale-90 flex items-center justify-center transition-all cursor-pointer shadow-xs border border-black/25 focus:outline-none"
+                title="Minimize code editor (Yellow)"
+                aria-label="Minimize code editor"
+              >
+                <FiMinus className="w-2 h-2 text-[#5f3f00] opacity-0 group-hover/mac:opacity-100 transition-opacity stroke-[3]" />
+              </button>
+
+              {/* Green Dot: Maximize / Restore */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleMaximize();
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                className="w-3 h-3 rounded-full bg-[#27c93f] hover:bg-[#34c759] active:scale-90 flex items-center justify-center transition-all cursor-pointer shadow-xs border border-black/25 focus:outline-none"
+                title={isMaximized ? "Restore view (Green)" : "Maximize editor (Green)"}
+                aria-label={isMaximized ? "Restore view" : "Maximize editor"}
+              >
+                {isMaximized ? (
+                  <FiMinimize2 className="w-2 h-2 text-[#004d1a] opacity-0 group-hover/mac:opacity-100 transition-opacity stroke-[3]" />
+                ) : (
+                  <FiMaximize2 className="w-2 h-2 text-[#004d1a] opacity-0 group-hover/mac:opacity-100 transition-opacity stroke-[3]" />
+                )}
+              </button>
             </div>
 
-            <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800/80 border border-slate-700 text-slate-300 font-mono text-[11px]">
-              <FiCode className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="font-semibold">React / JSX</span>
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800/80 border border-slate-700 text-slate-300 font-mono text-[11px] flex-shrink-0">
+              <FiCode className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+              <span className="font-semibold whitespace-nowrap">React / JSX</span>
             </div>
 
-            <span className="text-[11px] font-mono text-slate-400">
+            <span className="text-[11px] font-mono text-slate-400 flex-shrink-0 whitespace-nowrap">
               {lineCount} {lineCount === 1 ? "line" : "lines"}
             </span>
 
             {isFloating && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 select-none">
-                <FiMove className="w-2.5 h-2.5" /> Floating Window
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 select-none flex-shrink-0 whitespace-nowrap">
+                <FiMove className="w-2.5 h-2.5 flex-shrink-0" /> Floating Window
               </span>
             )}
 
             {isMaximized && (
-              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 flex-shrink-0 whitespace-nowrap">
                 Maximized IDE Mode
               </span>
             )}
           </div>
 
-          {/* Right: Actions (Format, Template, Copy, Clear, Pop Out / Dock, Maximize, Close) */}
+          {/* Right: Actions (Format, Template, Copy, Clear, Pop Out / Dock) */}
           <div className="flex items-center gap-1 text-slate-400 flex-shrink-0 ml-auto">
             <button
               type="button"
               onClick={handleFormatCode}
               disabled={disabled || !value}
-              className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-slate-200 disabled:opacity-40 transition-colors flex items-center gap-1 cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-slate-200 disabled:opacity-40 transition-colors flex items-center gap-1 cursor-pointer flex-shrink-0"
               title="Auto-format code indentation"
             >
-              <FiAlignLeft className="w-3.5 h-3.5" />
-              <span className="text-[11px] hidden sm:inline">Format</span>
+              <FiAlignLeft className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="text-[11px] hidden sm:inline whitespace-nowrap">Format</span>
             </button>
 
             <button
               type="button"
               onClick={handleInsertTemplate}
               disabled={disabled}
-              className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-slate-200 disabled:opacity-40 transition-colors flex items-center gap-1 cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-slate-200 disabled:opacity-40 transition-colors flex items-center gap-1 cursor-pointer flex-shrink-0"
               title="Insert React boilerplate component"
             >
-              <FiFileText className="w-3.5 h-3.5" />
-              <span className="text-[11px] hidden sm:inline">Template</span>
+              <FiFileText className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="text-[11px] hidden sm:inline whitespace-nowrap">Template</span>
             </button>
 
             <button
               type="button"
               onClick={handleCopy}
               disabled={!value}
-              className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-slate-200 disabled:opacity-40 transition-colors flex items-center gap-1 cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-slate-200 disabled:opacity-40 transition-colors flex items-center gap-1 cursor-pointer flex-shrink-0"
               title="Copy code to clipboard"
             >
               {copied ? (
-                <FiCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <FiCheck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
               ) : (
-                <FiCopy className="w-3.5 h-3.5" />
+                <FiCopy className="w-3.5 h-3.5 flex-shrink-0" />
               )}
-              <span className="text-[11px] hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
+              <span className="text-[11px] hidden sm:inline whitespace-nowrap">{copied ? "Copied" : "Copy"}</span>
             </button>
 
             <button
               type="button"
               onClick={handleClear}
               disabled={disabled || !value}
-              className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-red-400 disabled:opacity-40 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-red-400 disabled:opacity-40 transition-colors cursor-pointer flex-shrink-0"
               title="Clear code"
             >
-              <FiRotateCcw className="w-3.5 h-3.5" />
+              <FiRotateCcw className="w-3.5 h-3.5 flex-shrink-0" />
             </button>
 
-            <div className="w-[1px] h-3.5 bg-slate-700 mx-1" />
+            <div className="w-[1px] h-3.5 bg-slate-700 mx-1 flex-shrink-0" />
 
             {/* Pop-Out / Dock Toggle */}
             <button
               type="button"
               onClick={toggleFloating}
-              className={`p-1.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer ${
+              className={`p-1.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer flex-shrink-0 ${
                 isFloating
                   ? "bg-emerald-600/25 text-emerald-300 hover:bg-emerald-600/35 ring-1 ring-emerald-500/40"
                   : "hover:bg-slate-800 hover:text-emerald-400 text-slate-300"
@@ -770,74 +838,34 @@ export default function CodeEditor({
             >
               {isFloating ? (
                 <>
-                  <FiSidebar className="w-3.5 h-3.5" />
-                  <span className="text-[11px] hidden sm:inline font-medium">Dock</span>
+                  <FiSidebar className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span className="text-[11px] hidden sm:inline font-medium whitespace-nowrap">Dock</span>
                 </>
               ) : (
                 <>
-                  <FiExternalLink className="w-3.5 h-3.5" />
-                  <span className="text-[11px] hidden sm:inline font-medium">Pop Out</span>
+                  <FiExternalLink className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span className="text-[11px] hidden sm:inline font-medium whitespace-nowrap">Pop Out</span>
                 </>
               )}
             </button>
-
-            {/* Minimize to small right-side arrow button */}
-            <button
-              type="button"
-              onClick={() => setIsCollapsed(true)}
-              className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-amber-300 text-slate-300 transition-colors cursor-pointer"
-              title="Minimize to right-side arrow button"
-            >
-              <FiMinus className="w-3.5 h-3.5" />
-            </button>
-
-            {/* Maximize / Restore width toggle */}
-            <button
-              type="button"
-              onClick={toggleMaximize}
-              className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                isMaximized
-                  ? "bg-indigo-600/25 text-indigo-300 hover:bg-indigo-600/35 ring-1 ring-indigo-500/40"
-                  : "hover:bg-slate-800 hover:text-white"
-              }`}
-              title={isMaximized ? "Restore view" : "Maximize editor (Full IDE)"}
-            >
-              {isMaximized ? (
-                <FiMinimize2 className="w-3.5 h-3.5 text-indigo-400" />
-              ) : (
-                <FiMaximize2 className="w-3.5 h-3.5" />
-              )}
-            </button>
-
-            {/* Close button */}
-            {onClose && (
-              <button
-                type="button"
-                onClick={onClose}
-                className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-red-400 transition-colors cursor-pointer"
-                title="Close code editor"
-              >
-                <FiX className="w-4 h-4" />
-              </button>
-            )}
           </div>
         </div>
 
-        {/* If maximized, show compact question prompt context */}
+        {/* If maximized, show complete question prompt context */}
         {isMaximized && activeQuestionText && (
-          <div className="px-4 py-2 bg-indigo-950/35 border-b border-indigo-900/40 flex items-center justify-between gap-3 text-xs flex-shrink-0">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 flex-shrink-0 uppercase tracking-wider">
+          <div className="px-4 py-2.5 bg-gradient-to-r from-indigo-950/60 via-slate-900/70 to-indigo-950/40 border-b border-indigo-900/50 flex items-start justify-between gap-3 text-xs flex-shrink-0">
+            <div className="flex items-start gap-2.5 min-w-0 flex-1">
+              <span className="px-2 py-0.5 mt-0.5 rounded-md text-[10px] font-bold bg-indigo-500/25 text-indigo-300 border border-indigo-500/30 flex-shrink-0 uppercase tracking-wider">
                 Question
               </span>
-              <p className="text-slate-300 text-xs truncate">
+              <p className="text-slate-200 text-xs sm:text-[13px] leading-relaxed whitespace-normal break-words font-medium select-text">
                 {activeQuestionText}
               </p>
             </div>
             <button
               type="button"
               onClick={toggleMaximize}
-              className="text-[11px] text-indigo-400 hover:text-indigo-300 transition-colors flex-shrink-0 underline cursor-pointer"
+              className="px-2.5 py-1 rounded-md text-[11px] text-indigo-300 hover:text-white bg-indigo-900/40 hover:bg-indigo-800/60 border border-indigo-700/50 transition-colors flex-shrink-0 cursor-pointer self-start whitespace-nowrap mt-0.5"
             >
               Restore split view
             </button>

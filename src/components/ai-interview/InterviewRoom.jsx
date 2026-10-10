@@ -44,7 +44,7 @@ export default function InterviewRoom({
   const [apiError, setApiError] = useState(null);
   const [codeSnippet, setCodeSnippet] = useState(DEFAULT_REACT_CODE);
   const [isCodeEditorOpen, setIsCodeEditorOpen] = useState(false);
-  const [editorWidth, setEditorWidth] = useState(520);
+  const [editorWidth, setEditorWidth] = useState(540);
   const lastDraftRef = useRef(null);
 
   // Q&A history records for final evaluation
